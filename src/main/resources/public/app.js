@@ -4,9 +4,9 @@ window.eruptSiteConfig = {
     //附件地址，一般情况下不需要指定，如果自定义对象存储空间，则需在此指定附件资源访问地址
     fileDomain: "",
     //标题
-    title: "Erupt Framework",
+    title: "exam-paper system",
     //描述
-    desc: "通用数据管理框架",
+    desc: "exam-paper管理系统",
     //是否展示版权信息
     copyright: true,
     //高德地图api key,使用地图组件须指定此属性，amapKey获取地址：https://lbs.amap.com (服务平台为：Web端(JS API))
