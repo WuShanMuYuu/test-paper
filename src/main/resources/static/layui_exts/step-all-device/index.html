@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>分布表单测试</title>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+    <link href="./layui/css/layui.css" rel="stylesheet"/>
+    <link href="step-lc/step.css" rel="stylesheet">
+</head>
+<body>
+    <div id="StepWrapper_wrapper"></div>
+    <script src="./layui/layui.js"></script>
+    <script>
+        layui.config({
+            base:'./'
+        }).extend({
+            step: 'step-lc/step'
+        }).use([ 'form', 'step'], function (form, step) {
+            let $ = layui.$
+            let protocol = {
+                _tpl: `
+                    <div style="text-align: center">
+                        <div>
+                            <i class="layui-icon layui-icon-help"></i>
+                            用户协议1
+                        </div>
+                        <div>
+                            <i class="layui-icon layui-icon-help"></i>
+                            用户协议2
+                        </div>
+                        <div>
+                            <i class="layui-icon layui-icon-help"></i>
+                            用户协议3
+                        </div>
+                        <button id="agree" class="layui-btn next layui-btn-sm layui-btn-normal">同意</button>
+                        {{#
+                            d.init()
+                        }}
+                    </div>
+                `,
+                ctx: {
+                    init: () => {
+                        console.log('content:1')
+                        setTimeout(() => {
+                            $('#agree').on('click', e => {
+                                step.next()
+                            })
+                        })
+                    }
+                }
+            }
+            
+            let information = {
+                _tpl: `
+                    <div style="text-align: center; padding-right: 5em;">
+                        <form class="layui-form">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">用户名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input" required 
+                                    autocomplete="off"
+                                    lay-verify="required" lay-vertype="tips" name="username" 
+                                    placeholder="填写用户名" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                   <button type="button" class="prev layui-btn   layui-btn-primary layui-btn-sm">上页</button>
+                                    <button lay-submit lay-filter="demoSubmit" class="layui-btn layui-btn-sm layui-btn-normal">确定</button>
+                                </div>
+                            </div>
+                        </form>
+                        {{#
+                            d.init()
+                        }}
+                    </div>
+                `,
+                ctx: {
+                    init: () => {
+                        console.log('content:2')
+                        form.on('submit(demoSubmit)', data => {
+                            step.next()
+                            return false
+                        })
+                    }
+                }
+            }
+            
+            let result = {
+                _tpl: `
+                    <div style="text-align: center">
+                        <div>
+                            <i class="layui-icon layui-icon-ok" style="font-size: 50px; color: #5FB878;"></i>  
+                        </div>
+                        <button id="again" class="layui-btn layui-btn-normal">再来一次</button>
+                        {{#
+                            d.init()
+                        }}
+                    </div>
+                `,
+                ctx: {
+                    init: () => {
+                        setTimeout(() => {
+                            $('#again').on('click', e => {
+                                step.next()
+                            })
+                        })
+                        console.log('content:3')
+                    }
+                }
+            }
+
+            step.run({
+                elem: '#StepWrapper_wrapper',
+                stepWidth: '16rem',
+                contentWidth: '18rem',
+                contentHeight: '30rem',
+                nodes: [
+                    {
+                        tip: '协议',
+                    },
+                    {
+                        tip: '信息',
+                    },
+                    {
+                        tip: '结果',
+                    }
+                ],
+                contents: [protocol, information, result]
+            })
+        })
+    </script>
+</body>
+</html>
