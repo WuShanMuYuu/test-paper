@@ -16,7 +16,7 @@
     <description>exampaper project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
-        <erupt.version>1.9.3</erupt.version>
+        <erupt.version>1.10.1</erupt.version>
     </properties>
     <dependencies>
         <dependency>
@@ -63,6 +63,25 @@
             <artifactId>erupt-web</artifactId>
             <version>${erupt.version}</version>
         </dependency>
+        <!--定时任务-->
+        <dependency>
+            <groupId>xyz.erupt</groupId>
+            <artifactId>erupt-job</artifactId>
+            <version>${erupt.version}</version>
+        </dependency>
+        <!-- 代码生成器模块 -->
+        <dependency>
+            <groupId>xyz.erupt</groupId>
+            <artifactId>erupt-generator</artifactId>
+            <version>${erupt.version}</version>
+        </dependency>
+        <!--在线接口开发-->
+        <dependency>
+            <groupId>xyz.erupt</groupId>
+            <artifactId>erupt-magic-api</artifactId>
+            <version>${erupt.version}</version>
+        </dependency>
+
 
     </dependencies>
 
@@ -71,8 +90,40 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--  工程主入口 -->
+                    <mainClass>com.exampaper.krielwus.KrielwusApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>application.properties</include>
+                    <include>application.yml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>static/**</include>
+                    <include>templates/**</include>
+                    <include>public/**</include>
+                </includes>
+            </resource>
+        </resources>
+
+
     </build>
 
 </project>
