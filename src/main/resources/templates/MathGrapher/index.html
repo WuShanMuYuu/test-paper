@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+    <title>MathGrapher 数学图形计算器</title>
+
+    <link rel="stylesheet" type="text/css" href="../components/Graphr-master/jsgcalc.css" />
+
+    <script type="text/javascript" src="http://www.yerich.net/jquery.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.3.0/math.min.js"></script>
+    <script type="text/javascript" src="../components/Graphr-master/calc.js"></script>
+    <script type="text/javascript" src="../components/Graphr-master/jsgcalc.js"></script>
+    <script type="text/javascript" src="../components/Graphr-master/jsgui.js"></script>
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <div id="hideSidebar"><a href="javascript:void(0)" onclick="jsgui.hideSidebar()">»</a></div>
+    <div id="showSidebar"><a href="javascript:void(0)" onclick="jsgui.showSidebar()">«</a></div>
+
+    <div id="toolbar">
+        <div id="tool_select">
+            <a href="javascript:void(0)" onclick="jsgui.setTool('pointer')" id="tool_select_pointer" class="toolbar_option toolbar_selected">
+                <img src="../components/Graphr-master/images/pointer.png" alt="指针" title="指针"/></a>
+            <a href="javascript:void(0)" onclick="jsgui.setTool('trace')" id="tool_select_trace" class="toolbar_option">
+                <img src="../components/Graphr-master/images/trace.png" alt="标记坐标" title="坐标"/></a>
+            <a href="javascript:void(0)" onclick="jsgui.setTool('vertex')" id="tool_select_vertex" class="toolbar_option">
+                <img src="../components/Graphr-master/images/minmax.png" alt="标记顶点" title="顶点"/></a>
+            <a href="javascript:void(0)" onclick="jsgui.setTool('root')" id="tool_select_root" class="toolbar_option">
+                <img src="../components/Graphr-master/images/root.png" alt="标记交点(x)" title="交点(x)"/></a>
+            <a href="javascript:void(0)" onclick="jsgui.setTool('intersect')" id="tool_select_intersect" class="toolbar_option">
+                <img src="../components/Graphr-master/images/intersect.png" alt="标记交点f(x)与g(x)" title="交点[f(x)与g(x)]"/></a>
+            <a href="javascript:void(0)" onclick="jsgui.setTool('derivative')" id="tool_select_derivative" class="toolbar_option">
+                <img src="../components/Graphr-master/images/derivative.png" alt="显示切线" title="切线"/></a>
+            <a href="javascript:void(0)" onclick="jsgui.setTool('zoombox')" id="tool_select_zoombox" class="toolbar_option">
+                <img src="../components/Graphr-master/images/zoombox.png" alt="窗口界限" title="窗口界限"/></a>
+            <a href="javascript:void(0)" onclick="jsgui.setTool('zoomin')" id="tool_select_zoomin" class="toolbar_option">
+                <img src="../components/Graphr-master/images/zoomin.png" alt="放大" title="放大"/></a>
+            <a href="javascript:void(0)" onclick="jsgui.setTool('zoomout')" id="tool_select_zoomout" class="toolbar_option">
+                <img src="../components/Graphr-master/images/zoomout.png" alt="缩小" title="缩小"/></a>
+        </div>
+    </div>
+
+    <div id="toolboxes">
+        <div class="toolbox" id="toolbox_zoombox">
+            <div class="toolbox_header">
+                <div class="toolbox_close"><a href="javascript: void(0)">关闭</a></div>
+                窗口界限
+            </div>
+
+            <div class="toolbox_main">
+                <table>
+                    <tr>
+                        <td></td>
+                        <td align="center">y-max: <input id="toolbox_zoombox_ymax" class="jsgcalc_ymax" type="text" size="4" /></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>x-min:<br /><input id="toolbox_zoombox_xmin" class="jsgcalc_xmin" type="text" size="4" /></td>
+                        <td align="center"><img src="graph.png" style="width: 70px;"/></td>
+                        <td>x-max:<br /><input id="toolbox_zoombox_xmax" class="jsgcalc_xmax" type="text" size="4" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td align="center">y-min: <input id="toolbox_zoombox_ymin" class="jsgcalc_ymin" type="text" size="4" /></td>
+                        <td></td>
+                    </tr>
+                </table>
+
+                <a class="fancybutton" href="javascript: void(0)"
+                   onclick="jsgcalc.setWindow($('#toolbox_zoombox_xmin').val(), $('#toolbox_zoombox_xmax').val(), $('#toolbox_zoombox_ymin').val(), $('#toolbox_zoombox_ymax').val())">
+                    应用</a>
+                <br /><br />
+                <a href="javascript: void(0);" onclick="jsgcalc.resetZoom()">重置</a>
+            </div>
+        </div>
+
+        <div class="toolbox" id="toolbox_trace">
+            <div class="toolbox_header">
+                <div class="toolbox_close"><a href="javascript: void(0)">关闭</a></div>
+                坐标
+            </div>
+
+            <div class="toolbox_main">
+                x: <input id="toolbox_trace_input" class="jsgcalc_trace_input" type="text" size="20" style="width: 95%" /><br />
+                y: <input id="toolbox_trace_output" class="jsgcalc_trace_output" type="text" size="20" style="width: 95%" /><br /><br />
+
+                <a class="fancybutton" href="javascript: void(0)" onclick="jsgui.doTrace($('#toolbox_trace_input').val())">计算坐标</a><br />
+            </div>
+        </div>
+    </div>
+
+    <div id="sidewrapper">
+        <div id="graph_sidebar">
+            <h1 style="font-family: Lato, Arial, sans-serif; font-style: italic; font-size: 28pt; color: #3d94f6; text-shadow: 1px 1px #FFF ">图形计算</h1>
+            <span style="font-size: 90%; position: relative; bottom: 4px;"><em>Math Graphing Calculator</em>
+		</span><br /><br />
+
+            <div id="graph_inputs">
+
+            </div>
+            <br />
+            <div id="buttonbar">
+                <a class="fancybutton" href="javascript:void(0)" onclick="jsgui.evaluate()">绘图</a>
+                <a class="fancybutton" href="javascript:void(0)" onclick="jsgui.addInput()">添加</a>
+                <a class="fancybutton greybutton" href="javascript:void(0)" id="settings_button" onclick="$('#settings').toggle(400)"><img src='../components/Graphr-master/images/settings.png' alt='Settings' /></a><br /><br />
+            </div>
+
+            <div id="settings">
+<!--                <div id="angle_select" class="options_list">-->
+<!--                    <a href="javascript:void(0)" onclick="jsgui.setAngles('degrees')" id="angle_select_degrees" class="option">DEG</a>-->
+<!--                    <a href="javascript:void(0)" onclick="jsgui.setAngles('radians')" id="angle_select_radians" class="option option_selected">RAD</a>-->
+<!--                    <a href="javascript:void(0)" onclick="jsgui.setAngles('gradians')" id="angle_select_gradians" class="option">GRAD</a>-->
+<!--                </div>-->
+
+                <div id="gridlines_select" class="options_list">
+                    网格线:
+                    <a href="javascript:void(0)" onclick="jsgui.setGridlines('normal')" id="gridlines_select_normal" class="option option_selected">正常</a>
+                    <a href="javascript:void(0)" onclick="jsgui.setGridlines('less')" id="gridlines_select_less" class="option">更少</a>
+                    <a href="javascript:void(0)" onclick="jsgui.setGridlines('off')" id="gridlines_select_off" class="option">关闭</a>
+                </div>
+
+                <div id="quality_select" class="options_list">
+                    精度:
+                    <a href="javascript:void(0)" onclick="jsgui.setQuality(0.1)" id="quality_select_01" class="option">低</a>
+                    <a href="javascript:void(0)" onclick="jsgui.setQuality(0.5)" id="quality_select_05" class="option">中</a>
+                    <a href="javascript:void(0)" onclick="jsgui.setQuality(1)" id="quality_select_1" class="option option_selected">高</a>
+                    <a href="javascript:void(0)" onclick="jsgui.setQuality(5)" id="quality_select_5" class="option">极高</a>
+                </div>
+            </div>
+
+<!--            <p>By <a href="http://www.yerich.net">Richard Ye</a> |-->
+<!--                <a href="javascript: void(0);" onclick="about()">Disclaimer</a> | <a href="https://github.com/yerich/Graphr">GitHub</a><br />-->
+<!--                <span style="color: #999">Development (version 0.4)</span></p>-->
+
+        </div>
+    </div>
+
+    <div id="graph_wrapper">
+        <canvas id="graph">Sorry, your browser does not support this application. The following browsers are supported:<br /><br />
+            <a href="http://www.google.com/chrome/">Google Chrome</a><br /><a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a><br />
+            <a href="http://www.opera.com/">Opera</a></canvas>
+    </div>
+
+</div>
+
+</body>
+
+</html>
