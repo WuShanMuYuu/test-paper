@@ -1,7 +1,7 @@
 # application.yml写法
 server:
   port: 10035
-
+  max-http-header-size: 1024000
 erupt-app:
   # 登录几次出现验证码，值为0时表示一直需要登录验证码（1.6.1版本开始支持）
   verifyCodeCount: 2
