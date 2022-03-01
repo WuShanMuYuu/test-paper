@@ -1,0 +1,62 @@
+#StepWrapper_wrapper {
+    display:flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#StepWrapper {
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+    padding-bottom: 1.1rem;
+    margin-bottom: 1.1rem;
+}
+
+#StepWrapper_content {
+    width: 100%;
+}
+
+.s-step{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.s-step > .s-circle {
+    border: 0.125rem solid #1E9FFF;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    position: relative;
+}
+
+.s-step > .s-circle > .tip {
+    position: absolute;
+    top: 1.5rem;
+    text-align: center;
+}
+
+.s-step > .s-line {
+    border: 0.0625rem solid #1E9FFF;
+}
+
+.s-step > .active {
+    background:  #1E9FFF;
+    color: #1E9FFF;
+}
+
+.s-step > .active > .s-num {
+    color: #ffffff;
+}
+
+#Content_Main, #Content_Main .item {
+    background-color: transparent;
+}
+
+#Carousel_item:before {
+    content: '';
+}

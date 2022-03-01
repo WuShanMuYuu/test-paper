@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title> layui-select-ext 表单select多选和无限级联动</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="./layui/css/layui.css" media="all" />
+<style>
+  #btn-wrap{margin:100px auto;text-align:center;}
+    form{
+      margin:30px;
+    }
+
+
+  /*定位*/
+    .map-location{
+      width: 28px;
+      height: 30px;
+      position: absolute;
+      top: 8px;
+      right: 0px;
+      z-index: 5;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .map-location-input{
+      padding-right: 30px;
+    }
+
+</style>
+</head>
+<body>
+	
+
+<form id="facilitiesForm" lay-filter="facilitiesEditForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <input name="regionId" type="hidden"/>
+
+    <div class="layui-row">
+
+      <div class="layui-col-md4">
+        <div class="layui-form-item">
+          <label class="layui-form-label layui-form-required" >经度:</label>
+          <div class="layui-input-block">
+            <input id="longitude" name="longitude" placeholder="请输入经度" class="layui-input map-location-input"
+                 lay-verType="tips" lay-verify="required" required/>
+            <div id="locationBtn" class="layui-icon layui-icon-location map-location"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="layui-col-md4">
+        <div class="layui-form-item">
+          <label class="layui-form-label layui-form-required" >纬度:</label>
+          <div class="layui-input-block">
+            <input id="latitude" name="latitude" placeholder="请输入纬度" class="layui-input"
+                 lay-verType="tips" lay-verify="required" required/>
+          </div>
+
+        </div>
+      </div>
+
+
+    </div>  
+
+</form>
+ 	<script charset="UTF-8" src="./layui/layui.js"></script> 
+
+<script>
+  /*
+    该插件用于手动标注定位获取经纬度信息，
+    需要自己维护初始地的经纬度，比如，系统中的地区列表中的地区都有经纬度信息；
+    当前只集成了百度地图与天地图；
+  */
+  layui.config({
+    base : './layui_exts/'
+  }).extend({
+	locationX: 'location/locationX',
+    location: 'location/location',
+  }).use(['layer','form','jquery','location'],function(){
+    $ = layui.jquery;	
+    var form = layui.form;
+    var location = layui.location;
+
+    // 自己维护初始化标注。这里给的是天安门  
+    // 
+    var locationData = {lng:116.404,lat:39.915};
+
+		
+	location.render("#locationBtn",{
+                    type:0,
+                    apiType: "baiduMap",
+                    coordinate: "baiduMap",
+                    mapType: 2,
+                    zoom: 15,
+					title: '区域定位',
+                    init: function(){
+                        return {longitude: $("#longitude").val()?$("#longitude").val():locationData.lng,latitude: $("#latitude").val()?$("#latitude").val():locationData.lat};
+                    },
+                    success: function (data) {
+                        $("#longitude").val(data.lng);
+                        $("#latitude").val(data.lat);
+                    }
+                });
+    
+  });
+      
+ 
+    
+    
+    
+    
+</script>
+
+
+  
+</body>
+</html>

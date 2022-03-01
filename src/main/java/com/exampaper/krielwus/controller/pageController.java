@@ -21,7 +21,7 @@ public class pageController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/index.html")
+    @RequestMapping(value = "/index")
     public String index(Model model, HttpServletRequest request){
         //初始化页面
 
