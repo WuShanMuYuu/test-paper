@@ -4,10 +4,13 @@ import com.exampaper.krielwus.templates.interfaces.interfaceImpl.FileUploadImpl;
 import com.exampaper.krielwus.ueditor.UeditorConfigVM;
 import com.exampaper.krielwus.ueditor.UploadResultVM;
 import com.exampaper.krielwus.utils.Base64Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.exampaper.krielwus.templates.interfaces.FileUpload;
@@ -21,11 +24,10 @@ import java.util.Arrays;
 @RequestMapping(value = "/uetest")
 public class TestPageController {
 
-    private FileUpload fileUpload;
     private static final String IMAGE_UPLOAD = "imgUpload";
     private static final String IMAGE_UPLOAD_FILE = "upFile";
 
-    @RequestMapping(value = "/index")
+    @RequestMapping(value = "/index",method = RequestMethod.GET)
     public String toIndex(){
         return "index";
     }
@@ -33,10 +35,11 @@ public class TestPageController {
     @RequestMapping(value = "/uetest")
     public String uetest(Model model, HttpServletRequest request){
         String id = String.valueOf(request.getParameter("id"));
+//        String content = String.valueOf(request.getParameter("content").replace("\\*","\\+"));
         String content = String.valueOf(request.getParameter("content"));
         String index = String.valueOf(request.getParameter("index"));
         model.addAttribute("id",id);
-        model.addAttribute("content", Base64Util.Base64Decode(content.replace("*","+"),"UTF-8"));
+        model.addAttribute("content", Base64Util.Base64Decode(content,"UTF-8"));
         model.addAttribute("index",index);
         return "uetest";
     }
@@ -54,8 +57,7 @@ public class TestPageController {
                 String filePath;
                 try (InputStream inputStream = multipartFile.getInputStream()) {
 //                    filePath = fileUpload.uploadFile(inputStream, attachSize, imgName);
-//                    filePath = fileUpload.uploadMultipartFile(multipartFile);
-                    filePath =new FileUploadImpl().uploadMultipartFile(multipartFile,imgName);
+                    filePath = new FileUploadImpl().uploadMultipartFile(multipartFile,imgName);
                 }
                 String imageType = imgName.substring(imgName.lastIndexOf("."));
                 UploadResultVM uploadResultVM = new UploadResultVM();

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>select_data</title>
+    <link type="text/css" rel="stylesheet" href="../layui-v2.6.6/layui/css/layui.css">
+</head>
+<body>
+    <form class="layui-form" action="" style="margin-top: 20px;margin-left: 20px;" lay-filter="confirm">
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+
+                <label class="layui-form-label">选择连接池</label>
+                <div class="layui-input-inline" style="width: 500px;">
+                    <select name="powerNTSource" id="powerNTSource" lay-verify="required" lay-filter="powerNTSource"
+                            lay-search=""
+                            style="width: 500px">
+                        <option value="">直接选择或搜索选择</option>
+                    </select>
+                </div>
+
+                <div class="layui-input-inline">
+                    <button type="submit" class="layui-btn" style="margin-left: 20px" lay-submit="" lay-filter="searchSQl">查询</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <label class="layui-form-label" style="">查询条件</label>
+                <div class="layui-input-block">
+                    <textarea type="text" name="whereSql" lay-verify="whereSql" autocomplete="off"
+                              style="width: 1000px;height: 200px;margin-top:30px;font-size: large;font-weight: 200;"
+                              placeholder="请编辑查询条件" class="layui-input" value=""></textarea>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <label class="layui-form-label" style="">查询条件</label>
+                <div class="layui-input-block">
+                    <textarea type="text" name="whereSql" lay-verify="whereSql" autocomplete="off"
+                              style="width: 1000px;height: 200px;margin-top:30px;font-size: large;font-weight: 200;"
+                              placeholder="请编辑查询条件" class="layui-input" value=""></textarea>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">测试</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="table_name" id="table_id"  class="layui-input" lay-verify="required"
+                           lay-filter="add" style="width: 400px;" onclick="add_project(this)">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">测试2</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="table_name2" id="table_id2"  class="layui-input" lay-verify="required"
+                           lay-filter="add" style="width: 400px;" onclick="add_project(this)">
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
+    <script type="text/javascript" src="../js/util.charset.js"></script>
+    <script type="text/javascript" src="../js/base64.js"></script>
+    <script th:inline="javascript">
+        layui.use(["layer", "element", "form", "table", "laydate", "layedit", "upload"], function () {
+            var $ = layui.jquery,
+                layer = layui.layer,
+                form = layui.form;
+
+            form.on('submit(searchSQl)', function (data) {
+                console.log(JSON.stringify(data.field));
+                $.ajax({
+                    url: '../selectData/searchData',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: data.field,
+                    success: function (result) {
+                        console.log(JSON.stringify(result))
+                        if (0 == parseInt(result.code)) {
+                            layer.msg("测试成功！");
+
+                        } else {
+                            $("#InstanceName").empty();
+                            layer.open({
+                                type: 0,
+                                title: '提示',
+                                skin: 'layui-layer-molv',
+                                content: result.msg,
+                                icon: 0,
+                                closeBtn: 0
+                            });
+
+                        }
+
+                    }
+                });
+                return false;
+            });
+
+            form.on('text(add)', function (data) {
+                alert(1)
+                console.log(JSON.stringify(data.field));
+            });
+
+
+
+
+        });
+
+
+
+
+        //ajax  获取powerNT数据源连接池
+        // $.ajax({
+        //     url: '../commonRequest/getPowerNTSource',
+        //     type: 'POST',
+        //     dataType: 'json',
+        //     success: function (result) {
+        //         if (result.success) {
+        //             $.each(result.obj, function (index, value) {
+        //                 $('#powerNTSource').append(new Option(value.sync_name, value.sync_id));
+        //                 // $('#modules2').append(new Option(value.sync_name, value.sync_id));
+        //             });
+        //             layui.form.render("select");
+        //         } else {
+        //             $("#InstanceName").empty();
+        //             layer.open({
+        //                 type: 0,
+        //                 title: '提示',
+        //                 skin: 'layui-layer-molv',
+        //                 content: result.msg,
+        //                 icon: 0,
+        //                 closeBtn: 0
+        //             });
+        //             return false;
+        //         }
+        //     }
+        // });
+
+
+        function add_project(o){
+            //获取input的元素ID
+            // alert('name='+o.name+' / id='+o.id);
+            if (o.value == '' || o.value == null){
+                // alert('x')
+            }
+            // var content = Util.charset.Base64.encode(o.value,"utf8").replace('\\+','\\*');
+            var content = o.value;
+            console.log(content)
+            layer.open({
+                title: '',
+                type: 2,
+                offset: 'auto',
+                area: ['75%', '55%'],
+                // btn:['确定','取消'],
+                closeBtn: 0,
+                content: '../uetest/uetest'+'?id='+o.id+'&content='+content,
+                scrollbar:false
+
+            });
+        };
+
+
+    </script>
+</body>
+
+</html>
