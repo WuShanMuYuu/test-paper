@@ -1,0 +1,70 @@
+<!--author:adminj-->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="adminj/libs/layui/css/layui.css?v=1">
+    <link rel="stylesheet" href="adminj/libs/select2/css/select2.min.css">
+</head>
+
+<body>
+
+    <!--code-->
+
+</body>
+<script src="adminj/libs/layui/layui.js?2.6.8"></script>
+<script src="adminj/libs/jquery/jquery-3.6.0.min.js"></script>
+<script src="adminj/libs/select2/js/select2.full.min.js"></script>
+<script src="adminj/libs/ckeditor5/ckeditor.js"></script>
+
+<script src="adminj/modules/adminj_utils.js"></script>
+
+</html>
+<script>
+
+
+    layui.config({
+        //dir: '/res/layui/'
+        version: false
+        , debug: false
+        , base: './adminj/modules/'
+    }).use('adminJFormData', function () {
+        var adminJFormData = layui.adminJFormData;
+        adminJFormData.init(_json, 'form');
+
+        try {
+            //var d = { "testf": "https://bookcover.yuewen.com/qdbimg/349573/1029778113/180", "test2": "https://bookcover.yuewen.com/qdbimg/349573/1029778113/180" };
+            //var d = { testm: ["https://bookcover.yuewen.com/qdbimg/349573/1029778113/180", "https://bookcover.yuewen.com/qdbimg/349573/1029778113/180"] };
+            //var d={ss:['1']}
+            var d={aa:[1,2]}
+            adminJFormData.setData('form', d);
+        } catch (e) {
+            console.log(e)
+        }
+
+        layui.form.on('submit(postButton)', function (data) {
+            try {
+                if (!adminJFormData.validate('form')) {//
+                    return false;
+                }
+                var data = adminJFormData.getData('form')
+                var val = JSON.stringify(data);
+                layui.layer.msg(val)
+                console.log(val)
+
+            } catch (e) {
+                console.log(e);
+            }
+
+            return false;
+        });
+
+
+    });
+
+
+
+</script>

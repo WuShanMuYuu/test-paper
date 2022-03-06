@@ -8,16 +8,15 @@
 <body>
 <form>
     <!-- 加载编辑器的容器 -->
-    <script id="container" name="content" type="text/plain"
-            style="width: 98%;height: 300px;margin-left: 1.5%;margin-top:35px;">
-
+    <script id="container" name="container" type="text/plain"
+            style="width: 98%;height: 420px;margin-left: 2%;margin-top:1.2rem;align-content: center">
     </script>
-    <div class="layui-form-item" style="margin-left: 25%;margin-top: 30px;">
-        <div class="layui-input-block" style="">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="addConfirm">提交</button>
-            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="cancelConfirm">取消</button>
-        </div>
-    </div>
+<!--    <div class="layui-form-item" style="margin-left: 0.4rem;margin-top: 30px;">-->
+<!--        <div class="layui-input-block" style="">-->
+<!--            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="addConfirm">提交</button>-->
+<!--            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="cancelConfirm">取消</button>-->
+<!--        </div>-->
+<!--    </div>-->
 <!--    <div class="layui-form-item" style="margin-left: 25%;margin-top: 30px;">-->
 <!--        <div class="layui-input-block" style="">-->
 <!--            <input id="id" name="id" type="text" class="layui-input">-->
@@ -47,6 +46,8 @@
 </body>
 <script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
 <script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/util.charset.js"></script>
+<script type="text/javascript" src="../js/base64.js"></script>
 <script type="text/javascript" th:inline="javascript">
     layui.use(['form', 'layer'], function () {
         var form = layui.form,
@@ -55,13 +56,13 @@
         var element_id = [[(${id})]];
         var content_input = [[(${content})]];
         ue.ready(function() {
-            ue.setContent(content_input);
+            ue.setContent(Util.charset.Base64.decode(content_input,"utf8"));
         });
 
         form.on('submit(addConfirm)',function (data) {
             var index = parent.layer.getFrameIndex(window.name);
             var html = ue.getContent();
-            console.log(html);
+            // console.log(html);
             if (html == '' || html == null || html == undefined || html == 'undefined'){
                 parent.layer.close(index);
             }else {
