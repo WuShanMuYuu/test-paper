@@ -81,77 +81,7 @@
             var $ = layui.jquery,
                 layer = layui.layer,
                 form = layui.form;
-
-            form.on('submit(searchSQl)', function (data) {
-                console.log(JSON.stringify(data.field));
-                $.ajax({
-                    url: '../selectData/searchData',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: data.field,
-                    success: function (result) {
-                        console.log(JSON.stringify(result))
-                        if (0 == parseInt(result.code)) {
-                            layer.msg("测试成功！");
-
-                        } else {
-                            $("#InstanceName").empty();
-                            layer.open({
-                                type: 0,
-                                title: '提示',
-                                skin: 'layui-layer-molv',
-                                content: result.msg,
-                                icon: 0,
-                                closeBtn: 0
-                            });
-
-                        }
-
-                    }
-                });
-                return false;
-            });
-
-            form.on('text(add)', function (data) {
-                alert(1)
-                console.log(JSON.stringify(data.field));
-            });
-
-
-
-
         });
-
-
-
-
-        //ajax  获取powerNT数据源连接池
-        // $.ajax({
-        //     url: '../commonRequest/getPowerNTSource',
-        //     type: 'POST',
-        //     dataType: 'json',
-        //     success: function (result) {
-        //         if (result.success) {
-        //             $.each(result.obj, function (index, value) {
-        //                 $('#powerNTSource').append(new Option(value.sync_name, value.sync_id));
-        //                 // $('#modules2').append(new Option(value.sync_name, value.sync_id));
-        //             });
-        //             layui.form.render("select");
-        //         } else {
-        //             $("#InstanceName").empty();
-        //             layer.open({
-        //                 type: 0,
-        //                 title: '提示',
-        //                 skin: 'layui-layer-molv',
-        //                 content: result.msg,
-        //                 icon: 0,
-        //                 closeBtn: 0
-        //             });
-        //             return false;
-        //         }
-        //     }
-        // });
-
 
         function add_project(o){
             //获取input的元素ID
@@ -159,19 +89,32 @@
             if (o.value == '' || o.value == null){
                 // alert('x')
             }
-            // var content = Util.charset.Base64.encode(o.value,"utf8").replace('\\+','\\*');
-            var content = o.value;
-            console.log(content)
+            var content = encodeURIComponent(Util.charset.Base64.encode(o.value,"utf8"));
             layer.open({
                 title: '',
                 type: 2,
                 offset: 'auto',
-                area: ['75%', '55%'],
-                // btn:['确定','取消'],
+                area: ['75%', '50%'],
                 closeBtn: 0,
-                content: '../uetest/uetest'+'?id='+o.id+'&content='+content,
-                scrollbar:false
-
+                content: ['../uetest/uetest'+'?id='+o.id+'&content='+content, 'no'],
+                scrollbar:false,
+                btn:['确定','取消'],
+                yes:function (index,layero) {
+                    // var body = layer.getChildFrame("body", index);
+                    var vvv = $(layero).find("iframe")[0].contentWindow.callbackdata();
+                    console.log("vvv"+vvv);
+                    $('#'+o.id+'').val(vvv);
+                    layer.close(index); //关闭弹窗
+                },
+                cancel:function () {
+                    layer.closeAll();
+                },
+                // success: function(layero, index){
+                //     var body = layer.getChildFrame('body', index);
+                //     var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                //     console.log(body.html()) //得到iframe页的body内容
+                //     body.find('container').val('Hi，我是从父页来的')
+                // }
             });
         };
 

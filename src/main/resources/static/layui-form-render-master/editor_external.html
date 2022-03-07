@@ -1,0 +1,1173 @@
+<!--author:adminj-->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="adminj/libs/layui/css/layui.css?v=1">
+    <link rel="stylesheet" href="adminj/libs/select2/css/select2.min.css">
+
+    <script src="adminj/libs/layui/layui.js?2.6.8&66"></script>
+    <script src="adminj/libs/jquery/jquery-3.6.0.min.js"></script>
+    <script src="adminj/libs/sortable/sortable.min.js"></script>
+    <script src="adminj/libs/sortable/jquery-sortable.js"></script>
+    <script src="adminj/libs/select2/js/select2.full.min.js"></script>
+    <script src="adminj/libs/ckeditor5/ckeditor.js"></script>
+
+    <script src="adminj/modules/adminj_utils.js"></script>
+</head>
+
+<body>
+
+    <!--code-->
+    <div class="layui-form">
+        <div class="adminj-ds-top-left">AdminJ LayuiFormRender</div>
+        <div class="adminj-ds-top-right">
+            <button type="button" class="layui-btn layui-btn-sm" lay-filter="exportJSON" id="exportJSON">
+                <i class="layui-icon layui-icon-download-circle" style="font-size: 1.2em"></i> 确 定
+            </button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-filter="clean" id="clean">
+                 清 空
+            </button>
+        </div>
+    </div>
+
+    <div id='adminJLayuiFormRender'></div>
+
+    <span id="componts_span" style="display:none;">
+        <div class="layui-form-item adminj-sort-item" id="popTableSelect" rename="false">
+                    <label class="layui-form-label">选择数据</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"></div>
+    
+    
+        </div>
+        <div class="layui-form-item adminj-sort-item" id="custom" rename="false">
+                    <label class="layui-form-label">自定义表单</label>
+                    <div class="layui-input-inline">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"></div>
+    
+    
+        </div>
+    </span>
+</body>
+
+
+</html>
+<script>
+    var selectTableColumns = [];
+
+    var $;
+    layui.config({
+        //dir: '/res/layui/'
+        version: true,
+        debug: true,
+        base: 'adminj/modules/'
+    }).extend({
+        tableSelect: 'tableSelect/tableSelect'
+    }).use(['adminJLayuiFormRender', 'tableSelect'], function() {
+        $ = layui.$;
+        var tableSelect = layui.tableSelect;
+
+        var compontsHtml = $('#componts_span').html();
+        $('#componts_span').remove()
+
+        var renderPopTableSelectObjects = {},
+            renderSelectSObject = {};
+        var formRender = layui.adminJLayuiFormRender;
+        formRender.render({
+            id: 'adminJLayuiFormRender',
+            componts: {
+                '基础组件': {
+                    'text': '输入框',
+                    'hidden': '隐藏域',
+                    'password': '密码框',
+                    'textarea': '文本域',
+                    'date': '日期选择',
+                    'switch': '选择开关',
+                    'select': '下拉选项',
+                    'select2': '下拉多选',
+                    'radio': '单选框',
+                    'checkbox': '多选框',
+                    'dateRange': '日期范围',
+                    'color': '颜色选择器',
+                    'editor': '文本编辑器',
+                    'slider': '滑块',
+                    'rate': '评分',
+                    'selectS': '无限级联动',
+                    'popTableSelect': '弹窗表格选择',
+                },
+                '文件上传': {
+                    'uploadImage': '单图上传',
+                    'uploadImages': '多图上传',
+                    'uploadFile': '文件上传',
+                    'uploadFiles': '多文件上传'
+                },
+                '布局': {
+                    'groupLayout': '多组布局'
+                }
+            },
+            compontsHtml: compontsHtml, //左则按理拖放完成后要替换的组件HTML
+            customRender: function(params) { //自定义组件
+                var formRender = params.formRender;
+                var dragOverComponents = params.dragOverComponents;
+                var toolProperites = params.toolProperites;
+
+                /**
+                 * 定义 弹窗表格选择
+                 **/
+                dragOverComponents.popTableSelect = {
+                    init: function(formRender, item) { //初始化组件
+                        var id = 'st_' + new Date().getTime();
+                        item.find('input').attr('id', id);
+                        tableSelect.render({
+                            elem: '#' + id,
+                            searchKey: 'my',
+                            checkedKey: 'id',
+                            searchPlaceholder: '自定义文字和name',
+                            table: {
+                                url: 'adminj/modules/tableSelect/table.json',
+                                cols: [
+                                    [{
+                                        type: 'checkbox'
+                                    }, {
+                                        field: 'id',
+                                        title: 'ID',
+                                        width: 100
+                                    }, {
+                                        field: 'username',
+                                        title: '姓名',
+                                        width: 300
+                                    }, {
+                                        field: 'sex',
+                                        title: '性别',
+                                        width: 100
+                                    }]
+                                ]
+                            },
+                            done: function(elem, data) {
+
+                            }
+                        });
+                    }
+                };
+
+                /**
+                 * 定义 弹窗表格选择 选择中后右边的属性栏
+                 * @param item
+                 */
+                toolProperites.popTableSelect = function(item) { //点击组件后生成右边属性栏
+                        return [{
+                            isArray: 0,
+                            properties: toolProperites.base.base1,
+                            hideTypes: ['placeholder', 'validateRule', 'minLength', 'maxLength']
+                        }, {
+                            label: '选择表',
+                            type: 'select',
+                            id: 'tableName',
+                            range: "1",
+                            options: [],
+                            initFunc: function(params) {
+                                popTableSelectObject.initSelectTable(params)
+                            },
+                            changeFunc: function(params) {
+                                popTableSelectObject.selectTable(params)
+                            }
+                        }, {
+                            label: '存储字段',
+                            type: 'select',
+                            id: 'saveColumnName',
+                            range: "1",
+                            options: [],
+                            changeFunc: function(params) {}
+                        }, {
+                            label: '结果可以多选',
+                            type: 'checkbox',
+                            id: 'resultSelectType',
+                            laySkin: 'primary',
+                            changeFunc: function(params) {}
+                        }, {
+                            type: 'showColumns',
+                            id: 'showColumns',
+                            defaultFunc: function(params) { //显示所有字段
+                                renderPopTableSelectObjects.showColumnsObject = popTableSelectObject.renderShowColumnsOptionTable(params)
+                            }
+                        }, {
+                            type: 'showIfColumns',
+                            id: 'showSqlIf',
+                            defaultFunc: function(params) { //显示条件字段
+                                renderPopTableSelectObjects.ifSqlColumnsObject = popTableSelectObject.renderSqlIfOptionTable(params)
+                            }
+                        }, {
+                            type: 'showOrderColumns',
+                            id: 'showOrder',
+                            defaultFunc: function(params) { //显示排序字段
+                                renderPopTableSelectObjects.orderColumnsObject = popTableSelectObject.renderOrderOptionTable(params)
+                            }
+                        }, {
+                            type: 'userQueryColumns',
+                            id: 'userQuery',
+                            defaultFunc: function(params) { //显示用户查询字段
+                                renderPopTableSelectObjects.userQueryColumnObject = popTableSelectObject.renderUserQueryOptionTable(params)
+                            }
+                        }]
+                    }
+                    /**
+                     * 重写 无限级联动 选择中后右边的属性栏
+                     *
+                     * */
+                    // dragOverComponents.selectS = {
+                    //
+                    // }
+
+                /**
+                 * 重写 无限级联动 选择中后右边的属性栏
+                 * @param item
+                 */
+                toolProperites.selectS = function(item) {
+                    return [{
+                        isArray: 0,
+                        properties: toolProperites.base.base1,
+                        showTypes: ['name', 'label', 'defValue', 'required', 'labelWidth', 'rowWidth', 'disabled']
+                    }, , {
+                        label: '选择表',
+                        type: 'select',
+                        id: 'tableName',
+                        range: "1",
+                        options: [],
+                        initFunc: function(params) {
+                            selectSObject.initSelectTable(params)
+                        },
+                        changeFunc: function(params) {
+                            selectSObject.selectTable(params)
+                        }
+                    }, {
+                        label: '存储字段',
+                        type: 'select',
+                        id: 'saveColumnName',
+                        range: "1",
+                        options: [],
+                        changeFunc: function(params) {}
+                    }, {
+                        label: '显示字段',
+                        type: 'select',
+                        id: 'showColumnName',
+                        range: "1",
+                        options: [],
+                        changeFunc: function(params) {}
+                    }, {
+                        label: '关联子数据字段',
+                        type: 'select',
+                        id: 'parentColumnName',
+                        range: "1",
+                        options: [],
+                        changeFunc: function(params) {}
+                    }, {
+                        label: '必须选择最后一级数据',
+                        type: 'checkbox',
+                        id: 'isLastSelect',
+                        laySkin: 'primary'
+                    }, {
+                        type: 'showIfColumns',
+                        id: 'showSqlIf',
+                        defaultFunc: function(params) { //显示条件字段
+                            renderSelectSObject.ifSqlColumnsObject = selectSObject.renderSqlIfOptionTable(params)
+                        }
+                    }, {
+                        type: 'showOrderColumns',
+                        id: 'showOrder',
+                        defaultFunc: function(params) { //显示排序字段
+                            renderSelectSObject.orderColumnsObject = selectSObject.renderOrderOptionTable(params)
+                        }
+                    }];
+                }
+
+                /**
+                 * 定义 组件 custom  选择中后右边的属性栏
+                 * @param item
+                 */
+                toolProperites.custom = function(item) { //点击组件后生成右边属性栏
+                    return [{
+                        label: "名称",
+                        type: 'text',
+                        id: 'name'
+                    }]
+                }
+
+            }
+        });
+
+
+        //selectS 无限级联动  的左则属性栏操作
+        var selectSObject = {
+            /**
+             * 如果有选择的结果数据，则需要初始化UI及其默认显示有选举权据
+             * @param params
+             * @param tableName
+             */
+            init: function(params, tableName) {
+                var that = this;
+                var divId = params.item.attr('id');
+                //加载字段成功后初始化所有input
+                this.loadTableColumns(tableName, function(tableName, resultArr) {
+                    var properties = formRender.propertiesMap[divId];
+
+                    var saveColumnName = properties.saveColumnName;
+                    $('#saveColumnName').val(saveColumnName);
+                    var showColumnName = properties.showColumnName;
+                    $('#showColumnName').val(showColumnName);
+                    var parentColumnName = properties.parentColumnName;
+                    $('#parentColumnName').val(parentColumnName);
+
+                    //显示的sql字段
+                    var showColumns = properties.showColumns;
+                    if (showColumns != undefined) {
+                        var renderObj = renderPopTableSelectObjects.showColumnsObject;
+                        for (var i = 0; i < showColumns.length; i++) {
+                            var row = showColumns[i];
+                            if (row.columnName == undefined) continue;
+                            renderObj.renderNewTr();
+                            var trs = renderObj.getTable().children();
+                            var tds = trs.eq(i).children();
+                            that.appendColumnNameOptions(tds.eq(0).find('select'), resultArr, row.columnName);
+                            tds.eq(1).find('input').val(row.label);
+                        }
+                    }
+
+                    //sql查询的条件字段
+                    var ifSqlColumns = properties.ifSqlColumns;
+                    if (ifSqlColumns != undefined) {
+                        var renderObj = renderPopTableSelectObjects.ifSqlColumnsObject;
+                        for (var i = 0; i < ifSqlColumns.length; i++) {
+                            var row = ifSqlColumns[i];
+                            if (row.columnName == undefined) continue;
+                            renderObj.getParams().clickCreateNewTr(renderObj, renderObj.getParams());
+                            var trs = renderObj.getTable().children();
+                            var tds = trs.eq(i).children();
+                            that.appendColumnNameOptions(tds.eq(0).find('select'), resultArr, row.columnName);
+                            tds.eq(1).find('select').val(row.ifSelect);
+                            tds.eq(2).find('input').val(row.value);
+                        }
+                    }
+
+                    //排序字段
+                    var orderColumns = properties.orderColumns;
+                    if (orderColumns != undefined) {
+                        var renderObj = renderPopTableSelectObjects.orderColumnsObject;
+                        if (orderColumns.columnName != undefined) {
+                            var trs = renderObj.getTable().children();
+                            var tds = trs.eq(0).children();
+                            tds.eq(0).find('select').val(orderColumns.columnName);
+                            tds.eq(1).find('select').val(orderColumns.orderType);
+                        }
+                    }
+                });
+            },
+            /**
+             * 初始化能选择的数据表
+             * @param params
+             */
+            initSelectTable: function(params) {
+                var that = this;
+                //列出所有的表
+                ajaxData('get', './tables.json', {
+                    action: 'tables'
+                }, function(data) { //列出所有表
+                    if (data.resultCode == 0) {
+                        var arr = data.result;
+                        var select = $('select[name="tableName"]');
+                        select.children().remove();
+                        select.append('<option value="">选择</option>')
+                        for (var i = 0; i < arr.length; i++) {
+                            select.append('<option value="{0}">{0}[{1}]</option>'.format(arr[i].tableName, arr[i].comment))
+                        }
+                        //如果有数据则选中
+                        var divId = params.item.attr('id');
+                        var tableName = formRender.propertiesMap[divId].tableName;
+                        if (tableName != undefined && tableName != '') {
+                            params.form.val(tableName);
+                            that.init(params, tableName);
+                        }
+                    }
+                });
+            },
+            /**
+             * 加载数据表的字段
+             * @param tableName
+             * @param loadedFunc
+             */
+            loadTableColumns: function(tableName, loadedFunc) {
+                var that = this;
+                var showSelectFunc = function(jqueryName, arr) {
+                    var select = $(jqueryName);
+                    that.appendColumnNameOptions(select, arr);
+                }
+                ajaxData('get', './tables-columns.json', {
+                    action: 'columns',
+                    tableName: tableName
+                }, function(data) { //列出所有表
+                    if (data.resultCode == 0) {
+                        var arr = data.result;
+                        showSelectFunc('select[name="saveColumnName"]', arr);
+                        showSelectFunc('select[name="showColumnName"]', arr);
+                        showSelectFunc('select[name="parentColumnName"]', arr);
+                        showSelectFunc('select[name="orderColumn"]', arr);
+                        selectTableColumns = arr;
+                        if (loadedFunc != undefined) {
+                            loadedFunc(tableName, arr);
+                        }
+                    }
+                });
+            },
+            /**
+             * 在select中选中表时执行
+             * @param params
+             */
+            selectTable: function(params) {
+                var divId = params.item.attr('id');
+                selectTableColumns = [];
+                $('#showColumnTable').children().remove(); //清空选择的显示字段
+                $('#showSqlIfTable').children().remove(); //清空选择的条件
+                $('select[name="saveColumnName"]').children().remove();
+                $('select[name="showColumnName"]').children().remove();
+                $('select[name="parentColumnName"]').children().remove();
+
+                var tr = $('#showOrderColumns').children().eq(0).children();
+                var trSelect = tr.eq(0).find('select');
+                trSelect.children().remove();
+                trSelect.append('<option value="">请选择表</option>');
+                tr.eq(1).find('select').val('');
+
+                var properties = formRender.propertiesMap[divId];
+                delete properties.showColumnName;
+                delete properties.saveColumnName;
+                delete properties.parentColumnName;
+                delete properties.ifSqlColumns;
+                properties.orderColumns = {};
+
+                if (params.value == '') return;
+
+                this.loadTableColumns(params.value);
+            },
+            //显示要SQL查询条件
+            renderSqlIfOptionTable: function(params) {
+                var that = this;
+                var divId = params.item.attr('id');
+                var rootNode = $('#propertiesDiv');
+                var inputArrays = ['<select tr-index="{0}" td-index="{1}" lay-ignore style="height: 38px;border-color: #eee;width:100px;"></select>',
+                    '<select   tr-index="{0}" td-index="{1}"   lay-ignore style="height: 38px;border-color: #eee;width:50px;"></select>',
+                    '<input  tr-index="{0}" td-index="{1}"   type="text" class="layui-input" >'
+                ];
+                var inputEventArrays = [function(index, params, input) {
+                    input.change(function() {
+                        var ifSqlColumns = formRender.propertiesMap[divId].ifSqlColumns[index];
+                        ifSqlColumns.columnName = input.val();
+                    })
+                }, function(index, params, input) {
+                    input.change(function() {
+                        var ifSqlColumns = formRender.propertiesMap[divId].ifSqlColumns[index];
+                        ifSqlColumns.ifSelect = input.val();
+                    })
+                }, function(index, params, input) {
+                    input.focusout(function() {
+                        var ifSqlColumns = formRender.propertiesMap[divId].ifSqlColumns[index];
+                        ifSqlColumns.value = input.val();
+                    })
+                }];
+
+                var sqlIf = ['>=', '<=', '>', '<', '=', '!=', 'like']
+
+                var renderOptionsTableObject = new RenderOptionsTableObject();
+                renderOptionsTableObject.render(rootNode, {
+                    item: params.item,
+                    tableId: 'showSqlIfTable',
+                    newTrButtonLabel: '增加查询条件',
+                    tdInputArrays: inputArrays,
+                    inputEventArrays: inputEventArrays,
+                    removeTrFunc: function(index, params) { //删除回调
+                        formRender.propertiesMap[divId].ifSqlColumns.splice(index, 1);
+                    },
+                    clickCreateNewTr: function(object, params) {
+                        var tableSelect = $('select[name="tableName"]');
+                        if (tableSelect.val() == '') {
+                            layui.layer.msg('请选择数据表')
+                            return false;
+                        }
+                        object.renderNewTr(); //直接调用函数
+                        //在写入新行后执行新代码
+                        var len = object.getTable().children().length;
+                        var tds = object.getTable().children().eq(len - 1).children(); //最后一行
+                        var columnSelect = tds.eq(0).find('select');
+                        that.appendColumnNameOptions(columnSelect, selectTableColumns);
+
+                        var ifSqlColumns = formRender.propertiesMap[divId].ifSqlColumns;
+                        if (ifSqlColumns == undefined) ifSqlColumns = [], formRender.propertiesMap[divId].ifSqlColumns = ifSqlColumns;
+                        ifSqlColumns[ifSqlColumns.length] = {};
+
+                        var ifSelect = tds.eq(1).find('select');
+                        ifSelect.append('<option value="">选择</option>')
+                        for (var i = 0; i < sqlIf.length; i++) {
+                            ifSelect.append('<option value="{0}">{0}</option>'.format(sqlIf[i]))
+                        }
+
+                        return false; //返回false后不再往下执行
+                    }
+                });
+                return renderOptionsTableObject;
+            }, //显示排序字段
+            renderOrderOptionTable: function(params) {
+                var divId = params.item.attr('id');
+                var rootNode = $('#propertiesDiv');
+                var inputArrays = ['<select name="orderColumn" tr-index="{0}" td-index="{1}" lay-ignore style="height: 38px;border-color: #eee;width:120px;"><option value="">请选择表</option></select>',
+                    '<select name="orderType" tr-index="{0}" td-index="{1}"   lay-ignore style="height: 38px;border-color: #eee;width:120px;">' +
+                    '<option value="">选择排序方式</option><option value="asc">顺序</option><option value="desc">倒序</option></select>'
+                ];
+                var inputEventArrays = [function(index, params, input) {
+                    input.change(function() {
+                        var orderColumns = formRender.propertiesMap[divId].orderColumns;
+                        console.log(JSON.stringify(orderColumns))
+                        orderColumns.columnName = input.val();
+                    })
+                }, function(index, params, input) {
+                    input.change(function() {
+                        var orderColumns = formRender.propertiesMap[divId].orderColumns;
+                        orderColumns.orderType = input.val();
+                    })
+                }];
+
+                var renderParams = {
+                    item: params.item,
+                    tableId: 'showOrderColumns',
+                    newTrButtonLabel: '选择排序字段',
+                    newTrButtonLabelClick: 1, //不执行按钮点击事件
+                    showRemoveButton: 1, //不显示删除行按钮
+                    tdInputArrays: inputArrays,
+                    inputEventArrays: inputEventArrays,
+                    removeTrFunc: function(index, params) { //删除回调
+                    }
+                };
+                var renderOptionsTableObject = new RenderOptionsTableObject();
+                renderOptionsTableObject.render(rootNode, renderParams);
+                $('#showOrderColumns_button').children().remove(); //删除添加新行的图标
+                renderOptionsTableObject.renderNewTr(); //直接生成新行
+
+                var orderColumns = formRender.propertiesMap[divId].orderColumns;
+                if (orderColumns == undefined) orderColumns = {}, formRender.propertiesMap[divId].orderColumns = orderColumns;
+                console.log(JSON.stringify(formRender.propertiesMap[divId].orderColumns))
+
+                return renderOptionsTableObject;
+
+            },
+            appendColumnNameOptions: function(select, columnArr, selectedValue) {
+                select.children().remove();
+                select.append('<option value="">选择</option>')
+                for (var i = 0; i < columnArr.length; i++) {
+                    var comment = columnArr[i].columnComment;
+                    if (!(comment == undefined || comment == '')) {
+                        comment = '[{0}]'.format(comment);
+                    }
+                    var selected = (selectedValue == columnArr[i].columnName) ? 'selected' : ''
+                    select.append('<option value="{0}" {2}>{0}{1}</option>'.format(columnArr[i].columnName, comment, selected))
+                }
+            }
+
+        }
+
+
+        //popTableSelect 的左则属性栏操作
+        var popTableSelectObject = {
+            /**
+             * 如果有选择的结果数据，则需要初始化UI及其默认显示有选举权据
+             * @param params
+             * @param tableName
+             */
+            init: function(params, tableName) {
+                var that = this;
+                var divId = params.item.attr('id');
+                //加载字段成功后初始化所有input
+                this.loadTableColumns(tableName, function(tableName, resultArr) {
+                    //显示的sql字段
+                    var showColumns = formRender.propertiesMap[divId].showColumns;
+                    if (showColumns != undefined) {
+                        var renderObj = renderPopTableSelectObjects.showColumnsObject;
+                        for (var i = 0; i < showColumns.length; i++) {
+                            var row = showColumns[i];
+                            if (row.columnName == undefined) continue;
+                            renderObj.renderNewTr();
+                            var trs = renderObj.getTable().children();
+                            var tds = trs.eq(i).children();
+                            that.appendColumnNameOptions(tds.eq(0).find('select'), resultArr, row.columnName);
+                            tds.eq(1).find('input').val(row.label);
+                        }
+                    }
+
+                    //sql查询的条件字段
+                    var ifSqlColumns = formRender.propertiesMap[divId].ifSqlColumns;
+                    if (ifSqlColumns != undefined) {
+                        var renderObj = renderPopTableSelectObjects.ifSqlColumnsObject;
+                        for (var i = 0; i < ifSqlColumns.length; i++) {
+                            var row = ifSqlColumns[i];
+                            if (row.columnName == undefined) continue;
+                            renderObj.getParams().clickCreateNewTr(renderObj, renderObj.getParams());
+                            var trs = renderObj.getTable().children();
+                            var tds = trs.eq(i).children();
+                            that.appendColumnNameOptions(tds.eq(0).find('select'), resultArr, row.columnName);
+                            tds.eq(1).find('select').val(row.ifSelect);
+                            tds.eq(2).find('input').val(row.value);
+                        }
+                    }
+
+                    //排序字段
+                    var orderColumns = formRender.propertiesMap[divId].orderColumns;
+                    if (orderColumns != undefined) {
+                        var renderObj = renderPopTableSelectObjects.orderColumnsObject;
+                        if (orderColumns.columnName != undefined) {
+                            var trs = renderObj.getTable().children();
+                            var tds = trs.eq(0).children();
+                            tds.eq(0).find('select').val(orderColumns.columnName);
+                            tds.eq(1).find('select').val(orderColumns.orderType);
+                        }
+                    }
+
+                    //用户可以输入查询的字段
+                    var userQueryColumn = formRender.propertiesMap[divId].userQueryColumn;
+                    if (userQueryColumn != undefined) {
+                        var renderObj = renderPopTableSelectObjects.userQueryColumnObject;
+                        if (userQueryColumn.columnName != undefined) {
+                            var trs = renderObj.getTable().children();
+                            var tds = trs.eq(0).children();
+                            tds.eq(0).find('select').val(userQueryColumn.columnName);
+                            tds.eq(1).find('select').val(userQueryColumn.ifSelect);
+                        }
+                    }
+
+
+                });
+            },
+            /**
+             * 初始化能选择的数据表
+             * @param params
+             */
+            initSelectTable: function(params) {
+                var that = this;
+                //列出所有的表
+                ajaxData('get', './tables.json', {
+                    action: 'tables'
+                }, function(data) { //列出所有表
+                    if (data.resultCode == 0) {
+                        var arr = data.result;
+                        var select = $('select[name="tableName"]');
+                        select.children().remove();
+                        select.append('<option value="">选择</option>')
+                        for (var i = 0; i < arr.length; i++) {
+                            select.append('<option value="{0}">{0}[{1}]</option>'.format(arr[i].tableName, arr[i].comment))
+                        }
+                        //如果有数据则选中
+                        var divId = params.item.attr('id');
+                        var tableName = formRender.propertiesMap[divId].tableName;
+                        if (tableName != undefined && tableName != '') {
+                            params.form.val(tableName);
+                            that.init(params, tableName);
+                        }
+                    }
+                });
+            },
+            /**
+             * 加载数据表的字段
+             * @param tableName
+             * @param loadedFunc
+             */
+            loadTableColumns: function(tableName, loadedFunc) {
+                var that = this;
+                ajaxData('get', './tables-columns.json', {
+                    action: 'columns',
+                    tableName: tableName
+                }, function(data) { //列出所有表
+                    if (data.resultCode == 0) {
+                        var arr = data.result;
+                        var select = $('select[name="saveColumnName"]');
+                        that.appendColumnNameOptions(select, arr);
+                        select = $('select[name="orderColumn"]');
+                        that.appendColumnNameOptions(select, arr); //init 排序字段
+                        select = $('#showUserQueryTable').children().eq(0).children().eq(0).find('select');
+                        that.appendColumnNameOptions(select, arr); //init 用户查询
+                        selectTableColumns = arr;
+                        if (loadedFunc != undefined) {
+                            loadedFunc(tableName, arr);
+                        }
+                    }
+                });
+            },
+            /**
+             * 在select中选中表时执行
+             * @param params
+             */
+            selectTable: function(params) {
+                var divId = params.item.attr('id');
+                selectTableColumns = [];
+                $('#showColumnTable').children().remove(); //清空选择的显示字段
+                $('#showSqlIfTable').children().remove(); //清空选择的条件
+                $('select[name="saveColumnName"]').children().remove();
+
+                var tr = $('#showOrderColumns').children().eq(0).children();
+                var trSelect = tr.eq(0).find('select');
+                trSelect.children().remove();
+                trSelect.append('<option value="">请选择表</option>');
+                tr.eq(1).find('select').val('');
+
+                tr = $('#showUserQueryTable').children().eq(0).children(); //table tr
+                trSelect = tr.eq(0).find('select');
+                trSelect.children().remove();
+                trSelect.append('<option value="">请选择表</option>');
+                tr.eq(1).find('select').val('');
+
+
+                var properties = formRender.propertiesMap[divId];
+                delete properties.saveColumnName;
+                delete properties.showColumns;
+                properties.userQueryColumn = {};
+                delete properties.ifSqlColumns;
+                properties.orderColumns = {};
+                if (params.value == '') return;
+
+                this.loadTableColumns(params.value);
+            },
+            //显示在上边的用户输入的查询字段
+            renderUserQueryOptionTable: function(params) {
+                var divId = params.item.attr('id');
+                var rootNode = $('#propertiesDiv');
+                var inputArrays = ['<select tr-index="{0}" td-index="{1}" lay-ignore style="height: 38px;border-color: #eee;width:120px;"><option value="">请选择表</option></select>',
+                    '<select  tr-index="{0}" td-index="{1}"   lay-ignore style="height: 38px;border-color: #eee;width:120px;"></select>'
+                ];
+                var inputEventArrays = [function(index, params, input) {
+                    input.change(function() {
+                        var userQueryColumn = formRender.propertiesMap[divId].userQueryColumn;
+                        userQueryColumn.columnName = input.val();
+                    })
+                }, function(index, params, input) {
+                    input.change(function() {
+                        var userQueryColumn = formRender.propertiesMap[divId].userQueryColumn;
+                        userQueryColumn.ifSelect = input.val();
+                    })
+                }];
+
+                var sqlIf = ['>=', '<=', '>', '<', '=', '!=', 'like']
+                var renderParams = {
+                    item: params.item,
+                    tableId: 'showUserQueryTable',
+                    newTrButtonLabel: '用户查询条件',
+                    tdInputArrays: inputArrays,
+                    inputEventArrays: inputEventArrays,
+                    newTrButtonLabelClick: 1, //不执行按钮点击事件
+                    showRemoveButton: 1, //不显示删除行按钮
+                    removeTrFunc: function(index, params) { //删除回调
+                    }
+                }
+                var renderOptionsTableObject = new RenderOptionsTableObject();
+                renderOptionsTableObject.render(rootNode, renderParams);
+                $('#showUserQueryTable_button').children().remove(); //删除添加新行的图标
+                renderOptionsTableObject.renderNewTr(); //直接生成新行
+
+                var tds = renderOptionsTableObject.getTable().children().eq(0).children(); //最后一行
+                var ifSelect = tds.eq(1).find('select');
+                ifSelect.append('<option value="">选择</option>')
+                for (var i = 0; i < sqlIf.length; i++) {
+                    ifSelect.append('<option value="{0}">{0}</option>'.format(sqlIf[i]))
+                }
+
+                var userQueryColumn = formRender.propertiesMap[divId].userQueryColumn;
+                if (userQueryColumn == undefined) userQueryColumn = {}, formRender.propertiesMap[divId].userQueryColumn = userQueryColumn;
+                return renderOptionsTableObject;
+            },
+            //显示要SQL查询条件
+            renderSqlIfOptionTable: function(params) {
+                var that = this;
+                var divId = params.item.attr('id');
+                var rootNode = $('#propertiesDiv');
+                var inputArrays = ['<select tr-index="{0}" td-index="{1}" lay-ignore style="height: 38px;border-color: #eee;width:100px;"></select>',
+                    '<select   tr-index="{0}" td-index="{1}"   lay-ignore style="height: 38px;border-color: #eee;width:50px;"></select>',
+                    '<input  tr-index="{0}" td-index="{1}"   type="text" class="layui-input" >'
+                ];
+                var inputEventArrays = [function(index, params, input) {
+                    input.change(function() {
+                        var ifSqlColumns = formRender.propertiesMap[divId].ifSqlColumns[index];
+                        ifSqlColumns.columnName = input.val();
+                    })
+                }, function(index, params, input) {
+                    input.change(function() {
+                        var ifSqlColumns = formRender.propertiesMap[divId].ifSqlColumns[index];
+                        ifSqlColumns.ifSelect = input.val();
+                    })
+                }, function(index, params, input) {
+                    input.focusout(function() {
+                        var ifSqlColumns = formRender.propertiesMap[divId].ifSqlColumns[index];
+                        ifSqlColumns.value = input.val();
+                    })
+                }];
+
+                var sqlIf = ['>=', '<=', '>', '<', '=', '!=', 'like']
+
+                var renderOptionsTableObject = new RenderOptionsTableObject();
+                renderOptionsTableObject.render(rootNode, {
+                    item: params.item,
+                    tableId: 'showSqlIfTable',
+                    newTrButtonLabel: '增加查询条件',
+                    tdInputArrays: inputArrays,
+                    inputEventArrays: inputEventArrays,
+                    removeTrFunc: function(index, params) { //删除回调
+                        formRender.propertiesMap[divId].ifSqlColumns.splice(index, 1);
+                    },
+                    clickCreateNewTr: function(object, params) {
+                        var tableSelect = $('select[name="tableName"]');
+                        if (tableSelect.val() == '') {
+                            layui.layer.msg('请选择数据表')
+                            return false;
+                        }
+                        object.renderNewTr(); //直接调用函数
+                        //在写入新行后执行新代码
+                        var len = object.getTable().children().length;
+                        var tds = object.getTable().children().eq(len - 1).children(); //最后一行
+                        var columnSelect = tds.eq(0).find('select');
+                        that.appendColumnNameOptions(columnSelect, selectTableColumns);
+
+                        var ifSqlColumns = formRender.propertiesMap[divId].ifSqlColumns;
+                        if (ifSqlColumns == undefined) ifSqlColumns = [], formRender.propertiesMap[divId].ifSqlColumns = ifSqlColumns;
+                        ifSqlColumns[ifSqlColumns.length] = {};
+
+                        var ifSelect = tds.eq(1).find('select');
+                        ifSelect.append('<option value="">选择</option>')
+                        for (var i = 0; i < sqlIf.length; i++) {
+                            ifSelect.append('<option value="{0}">{0}</option>'.format(sqlIf[i]))
+                        }
+
+                        return false; //返回false后不再往下执行
+                    }
+                });
+                return renderOptionsTableObject;
+            }, //显示排序字段
+            renderOrderOptionTable: function(params) {
+                var divId = params.item.attr('id');
+                var rootNode = $('#propertiesDiv');
+                var inputArrays = ['<select name="orderColumn" tr-index="{0}" td-index="{1}" lay-ignore style="height: 38px;border-color: #eee;width:120px;"><option value="">请选择表</option></select>',
+                    '<select name="orderType" tr-index="{0}" td-index="{1}"   lay-ignore style="height: 38px;border-color: #eee;width:120px;">' +
+                    '<option value="">选择排序方式</option><option value="asc">顺序</option><option value="desc">倒序</option></select>'
+                ];
+                var inputEventArrays = [function(index, params, input) {
+                    input.change(function() {
+                        var orderColumns = formRender.propertiesMap[divId].orderColumns;
+                        orderColumns.columnName = input.val();
+                    })
+                }, function(index, params, input) {
+                    input.change(function() {
+                        var orderColumns = formRender.propertiesMap[divId].orderColumns;
+                        orderColumns.orderType = input.val();
+                    })
+                }];
+
+                var renderParams = {
+                    item: params.item,
+                    tableId: 'showOrderColumns',
+                    newTrButtonLabel: '选择排序字段',
+                    newTrButtonLabelClick: 1, //不执行按钮点击事件
+                    showRemoveButton: 1, //不显示删除行按钮
+                    tdInputArrays: inputArrays,
+                    inputEventArrays: inputEventArrays,
+                    removeTrFunc: function(index, params) { //删除回调
+                        //formRender.propertiesMap[divId].showColumns.splice(index, 1);
+                    }
+                };
+                var renderOptionsTableObject = new RenderOptionsTableObject();
+                renderOptionsTableObject.render(rootNode, renderParams);
+                $('#showOrderColumns_button').children().remove(); //删除添加新行的图标
+                renderOptionsTableObject.renderNewTr(); //直接生成新行
+
+                var orderColumns = formRender.propertiesMap[divId].orderColumns;
+                if (orderColumns == undefined) orderColumns = {}, formRender.propertiesMap[divId].orderColumns = orderColumns;
+
+                return renderOptionsTableObject;
+
+            }, //显示要选择显示的字段
+            renderShowColumnsOptionTable: function(params) {
+                var that = this;
+                var divId = params.item.attr('id');
+                var rootNode = $('#propertiesDiv');
+                var inputArrays = ['<select lay-ignore style="height: 38px;border-color: #eee;width:120px;"></select>',
+                    '<input type="text" class="layui-input" placeholder="字段标题">'
+                ];
+
+                var inputEventArrays = [function(index, params, input) {
+                    input.change(function() {
+                        var showColumns = formRender.propertiesMap[divId].showColumns[index];
+                        showColumns.columnName = input.val();
+                    });
+                }, function(index, params, input) {
+                    input.focusout(function() {
+                        var showColumns = formRender.propertiesMap[divId].showColumns[index];
+                        showColumns.label = input.val();
+                    })
+                }];
+
+                var renderOptionsTableObject = new RenderOptionsTableObject();
+                renderOptionsTableObject.render(rootNode, {
+                    item: params.item,
+                    tableId: 'showColumnTable',
+                    newTrButtonLabel: '增加显示字段',
+                    tdInputArrays: inputArrays,
+                    inputEventArrays: inputEventArrays,
+                    removeTrFunc: function(index, params) { //删除回调
+                        formRender.propertiesMap[divId].showColumns.splice(index, 1);
+                    },
+                    clickCreateNewTr: function(object, params) {
+                        var tableSelect = $('select[name="tableName"]');
+                        if (tableSelect.val() == '') {
+                            layui.layer.msg('请选择数据表')
+                            return false;
+                        }
+                        object.renderNewTr(); //直接调用函数
+                        //在写入新行后执行新代码
+                        var len = object.getTable().children().length;
+                        var select = object.getTable().children().eq(len - 1).find('select')
+                        that.appendColumnNameOptions(select, selectTableColumns);
+
+                        var showColumns = formRender.propertiesMap[divId].showColumns;
+                        if (showColumns == undefined) showColumns = [], formRender.propertiesMap[divId].showColumns = showColumns;
+                        showColumns[showColumns.length] = {};
+
+                        return false; //返回false后不再往下执行
+                    }
+                });
+                return renderOptionsTableObject;
+            },
+            appendColumnNameOptions: function(select, columnArr, selectedValue) {
+                select.children().remove();
+                select.append('<option value="">选择</option>')
+                for (var i = 0; i < columnArr.length; i++) {
+                    var comment = columnArr[i].columnComment;
+                    if (!(comment == undefined || comment == '')) {
+                        comment = '[{0}]'.format(comment);
+                    }
+                    var selected = (selectedValue == columnArr[i].columnName) ? 'selected' : ''
+                    select.append('<option value="{0}" {2}>{0}{1}</option>'.format(columnArr[i].columnName, comment, selected))
+                }
+            }
+
+        }
+
+
+        /**
+         * 生成options table的类，生成/删除表格的行，并在行中放置input
+         **/
+        function RenderOptionsTableObject() {
+            /**
+             * 增加一个有添加表格行的表格
+             */
+            var cinit = {
+                table: undefined,
+                newTrButton: undefined,
+                params: undefined,
+                getTable: function() {
+                    return this.table;
+                },
+                getParams: function() {
+                    return this.params;
+                },
+                init: function(rootNode, tableId, newTrButtonLabel) {
+                    var _buttonHtml = '<button class="layui-btn layui-btn-primary layui-border-blue layui-btn-sm" id="{1}_button">' +
+                        '<i class="layui-icon layui-icon-add-circle-fine" style="font-size: 16px;"></i> {0}</button>\n';
+                    _buttonHtml = _buttonHtml.format(newTrButtonLabel, tableId);
+                    var _tableHtml = '<table width="100%" border="0" style="margin-top: 5px;" id="{0}" count="0"></table>'.format(tableId);
+
+                    this.newTrButton = $(_buttonHtml);
+                    this.table = $(_tableHtml);
+                    rootNode.append('<br><br>').append(this.newTrButton).append(this.table);
+                },
+                /**
+                 * 生成新的table
+                 * @param rootNode 要绘table的上级节点
+                 * @param params
+                 **/
+                render: function(rootNode, params) {
+                    var that = this;
+                    that.params = params;
+                    that.init(rootNode, params.tableId, params.newTrButtonLabel);
+                    if (params.newTrButtonLabelClick != 1) {
+                        that.newTrButton.click(function() {
+                            if (params.clickCreateNewTr != undefined) { //如果有函数返回false 则不生成新行
+                                var res = params.clickCreateNewTr(that, params);
+                                if (!res) return;
+                            }
+                            that.renderNewTr();
+                        });
+                    }
+                    layui.form.render();
+                },
+                /**
+                 * 生成新的table tr
+                 * @param params
+                 **/
+                renderNewTr: function() { //生成新的table tr
+                    var that = this;
+                    var params = that.params;
+                    var index = that.table.attr('count');
+                    index++;
+                    that.table.attr('count', index)
+                    var tdInputArrays = params.tdInputArrays,
+                        inputEventArrays = params.inputEventArrays;
+                    if (tdInputArrays == undefined) tdInputArrays = [];
+                    if (inputEventArrays == undefined) inputEventArrays = [];
+                    var tr = $('<tr></tr>').attr('index', index);
+                    var arrIndex = this.table.children().length;
+                    for (var i = 0; i < tdInputArrays.length; i++) {
+                        var td = $('<td style="padding-left: 3px;padding-top: 3px;"></td>');
+                        var _input = tdInputArrays[i];
+                        _input = _input.format(index, i)
+                        var input = $(_input);
+                        if (i < inputEventArrays.length && inputEventArrays[i] != undefined) inputEventArrays[i](arrIndex, params, input);
+                        td.append(input);
+                        tr.append(td);
+                    }
+
+                    if (params.showRemoveButton != 1) { //显示删除按钮
+                        var td = $('<td align="center" style="padding-left: 3px;padding-top: 3px;"></td>\n');
+                        //删除一行
+                        var closeHtml = $('<i class="layui-icon layui-icon-close-fill" style="font-size: 2em;color: #c7ced5;cursor:pointer"></i>');
+                        that.deleteTr(closeHtml);
+                        td.append(closeHtml);
+                        tr.append(td);
+                    }
+
+
+                    that.table.append(tr);
+
+                    layui.form.render()
+
+                },
+                cleanTable: function() {
+                    this.table.children().remove();
+                },
+                /**
+                 * 得到当前tr在table里的index
+                 * @param trIndex 在 tr 上的 index attr
+                 * @returns {number}
+                 */
+                queryTrIndex: function(trIndex) {
+                    var index = 0;
+                    this.table.children().each(function(i, e) {
+                        var _index = $(this).attr('index');
+                        if (_index == trIndex) {
+                            index = i;
+                            return false;
+                        }
+                    });
+                    return index;
+                },
+                /**
+                 * 删除表格的行，并触发删除事件
+                 * @param closeHtml 触发事件的组件
+                 * @param params
+                 */
+                deleteTr: function(closeHtml) {
+                    var that = this;
+                    closeHtml.click(function() { //delete
+                        var parent = $(this).parent().parent();
+                        var trIndex = parent.attr('index');
+                        var dataArrayIndex = that.queryTrIndex(trIndex);
+                        if (that.params.removeTrFunc != undefined) that.params.removeTrFunc(dataArrayIndex, {
+                            params: that.params,
+                        });
+                        parent.remove();
+                        layui.form.render();
+                    });
+                }
+            }
+            return cinit;
+        }
+
+        var request = function(key) {
+            return (document.location.search.match(new RegExp("(?:^\\?|&)" + key + "=(.*?)(?=&|$)")) || ['', null])[1];
+        }
+
+        try {
+            layui.layer.msg('从左侧拖动组件到中间虚线区域，再选中组件设置属性');
+
+
+            var top = $('.adminj-ds-center').css('top');
+            if (isNaN(top)) {
+                if (top.indexOf('px') != -1) {
+                    top = top.substring(0, top.indexOf('px'));
+                }
+                if (isNaN(top)) top = 0;
+            }
+            var winHeight = $(window).height() - 10;
+            $('.adminj-ds-center').css('min-height', winHeight - top - 20)
+
+
+            try {
+                //var json = "[{\"id\":\"popTableSelect\",\"name\":\"name1631601581717\",\"required\":\"\",\"disabled\":\"\",\"labelWidth\":80,\"rowWidth\":100,\"inputWidth\":60,\"resultSelectType\":\"0\",\"orderColumns\":{\"orderType\":\"desc\",\"columnName\":\"id\"},\"userQueryColumn\":{\"ifSelect\":\"like\",\"columnName\":\"title\"},\"defValue\":\"admin\",\"tableName\":\"cms_table\",\"saveColumnName\":\"id\",\"showColumns\":[{\"label\":\"admina\",\"columnName\":\"table_name\"},{\"label\":\"bb\",\"columnName\":\"user_insert_form_url\"},{},{}],\"ifSqlColumns\":[{\"value\":\"0\",\"columnName\":\"type\",\"ifSelect\":\"=\"},{\"value\":\"66\",\"columnName\":\"table_name\",\"ifSelect\":\"<\"},{},{},{},{}],\"divId\":\"did_1631689596473_0\"},{\"id\":\"selectS\",\"name\":\"name1631601717664\",\"required\":\"\",\"disabled\":\"\",\"labelWidth\":80,\"rowWidth\":100,\"options\":[],\"requestURL\":\"admin\",\"divId\":\"did_1631689596478_1\"}]";
+                //var arr = JSON.parse(json);
+
+                var getFunc = request('getFunc');
+                if (stringIsEmpty(getFunc)) getFunc = 'parent._iframeWin.getSelectedColumnInput';
+                var _json = eval(getFunc)();
+                console.log(_json)
+                var json = JSON.parse(_json);
+                if (Array.isArray(json)) {
+                    formRender.importJSON(json)
+                } else {
+                    var arr = [];
+                    arr[0] = json;
+                    formRender.importJSON(arr)
+                }
+
+            } catch (e) {
+                console.log(e);
+            }
+
+            $('#clean').click(function() {
+                layui.adminJLayuiFormRender.clean();
+            });
+
+            $('#exportJSON').click(function() {
+                var str = formRender.exportJSON();
+                var json = JSON.parse(str);
+                //console.log(str)return;
+                var formType = request('formType');
+                if (formType == 'single') {
+                    if (json.length == 0) {
+                        layui.layer.msg('请选择一个html from');
+                        return;
+                    }
+                    if (json.length > 1) {
+                        layui.layer.msg('且能选择一个html from');
+                        return;
+                    }
+                }
+
+
+                try {
+                    var setFunc = request('setFunc');
+                    if (stringIsEmpty(setFunc)) setFunc = 'parent._iframeWin.selectedColumnInput';
+                    //var setFunc=request('getFunc');
+                    //if(stringIsEmpty(setFunc))setFunc='parent._iframeWin.selectedColumnInput';
+                    var index = parent.layer.getFrameIndex(window.name);
+                    eval(setFunc)(json);
+
+                    parent.layer.close(index);
+                } catch (e) {
+                    alert("select icon error:" + e);
+                }
+
+            })
+
+
+        } catch (e) {
+            alert("error:" + e)
+        }
+
+    });
+</script>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" href="../../layui-v2.6.6/layui/css/layui.css" rel="stylesheet">
+</head>
+<body>
+<form>
+    <!-- 加载编辑器的容器 -->
+    <script id="container" name="container" type="text/plain"
+            style="width: 98%;height: 420px;margin-left: 2%;margin-top:1.2rem;align-content: center">
+    </script>
+<!--    <div class="layui-form-item" style="margin-left: 0.4rem;margin-top: 30px;">-->
+<!--        <div class="layui-input-block" style="">-->
+<!--            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="addConfirm">提交</button>-->
+<!--            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="cancelConfirm">取消</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="layui-form-item" style="margin-left: 25%;margin-top: 30px;">-->
+<!--        <div class="layui-input-block" style="">-->
+<!--            <input id="id" name="id" type="text" class="layui-input">-->
+<!--        </div>-->
+<!--    </div>-->
+
+</form>
+
+
+
+
+
+<!-- 配置文件 -->
+<script type="text/javascript" src="../components/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="../components/ueditor/ueditor.all.js"></script>
+<script type="text/javascript" src="../components/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="../components/ueditor/kityformula-plugin/addKityFormulaDialog.js"></script>
+<script type="text/javascript" src="../components/ueditor/kityformula-plugin/getKfContent.js"></script>
+<script type="text/javascript" src="../components/ueditor/kityformula-plugin/defaultFilterFix.js"></script>
+
+
+<!-- 实例化编辑器 -->
+<script>
+    var ue = UE.getEditor('container', {
+        // initialFrameHeight: 420,
+        // initialFrameWidth: 900
+    });
+    var callbackdata = function () {
+        var editorHtml = ue.getContent();//获取富文本内容
+        return editorHtml;
+    }
+</script>
+</body>
+<script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/util.charset.js"></script>
+<script type="text/javascript" src="../js/base64.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    layui.use(['form', 'layer'], function () {
+        var form = layui.form,
+            layer = layui.layer,$ = layui.jquery;
+        var ue = UE.getEditor('container');
+        var element_id = [[(${id})]];
+        var content_input = [[(${content})]];
+        ue.ready(function() {
+            ue.setContent(Util.charset.Base64.decode(content_input,"utf8"));
+        });
+
+        // form.on('submit(addConfirm)',function (data) {
+        //     var index = parent.layer.getFrameIndex(window.name);
+        //     var html = ue.getContent();
+        //     // console.log(html);
+        //     if (html == '' || html == null || html == undefined || html == 'undefined'){
+        //         parent.layer.close(index);
+        //     }else {
+        //         parent.document.getElementById(element_id).value = html;
+        //         parent.layer.close(index);
+        //     }
+        // });
+        //
+        // form.on('submit(cancelConfirm)',function(data){
+        //     var index = parent.layer.getFrameIndex(window.name);
+        //     parent.layer.close(index);
+        //     return false;
+        // });
+
+
+
+    });
+</script>
+</html>

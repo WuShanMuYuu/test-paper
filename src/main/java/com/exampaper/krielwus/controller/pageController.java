@@ -28,4 +28,9 @@ public class pageController {
 
         return "";
     }
+//
+//    @RequestMapping(value = "/design")
+//    public String designPage(){
+//        return "/layui-form-render-master/editor";
+//    }
 }

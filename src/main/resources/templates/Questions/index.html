@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>试题新增</title>
+    <link type="text/css" rel="stylesheet" href="../layui-v2.6.6/layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" id="form" lay-filter="form" action="">
+    <div class="layui-form-item" id="subject_0" style="width: 100%;margin-top: 20px;">
+        <label class="layui-form-label">学科</label>
+        <div class="layui-input-inline">
+            <select id="subject" name="subject" lay-verify="required">
+                <option value="0">物理</option>
+                <option value="1">化学</option>
+                <option value="2">数学</option>
+            </select>
+        </div>
+        <div class="layui-form-mid layui-word-aux">学科</div>
+
+    </div>
+    <div class="layui-form-item" style="width: 100%;">
+        <label class="layui-form-label">题干</label>
+        <div class="layui-input-inline" style="width:60%;">
+            <input type="text" id="exam_name" name="exam_name" autocomplete="off" class="layui-input"
+                   style="width: 99%;"
+                   lay-verify="required" onclick="add_project(this)">
+        </div>
+        <div class="layui-form-mid layui-word-aux">点击题干输入栏</div>
+    </div>
+    <div class="layui-form-item" style="width: 100%;">
+        <label class="layui-form-label">A</label>
+        <div class="layui-input-inline" style="width:60%;">
+            <input type="text" id="options_a" name="options_a" autocomplete="off" class="layui-input"
+                   style="width: 99%;"
+                   lay-verify="required" onclick="add_project(this)">
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+    <div class="layui-form-item" style="width: 100%;">
+        <label class="layui-form-label">B</label>
+        <div class="layui-input-inline" style="width:60%;">
+            <input type="text" id="options_b" name="options_b" autocomplete="off" class="layui-input"
+                   style="width: 99%;"
+                   lay-verify="required" onclick="add_project(this)">
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+    <div class="layui-form-item" style="width: 100%;">
+        <label class="layui-form-label">C</label>
+        <div class="layui-input-inline" style="width:60%;">
+            <input type="text" id="options_c" name="options_c" autocomplete="off" class="layui-input"
+                   style="width: 99%;"
+                   lay-verify="required" onclick="add_project(this)">
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+    <div class="layui-form-item" style="width: 100%;">
+        <label class="layui-form-label">D</label>
+        <div class="layui-input-inline" style="width:60%;">
+            <input type="text" id="options_d" name="options_d" autocomplete="off" class="layui-input"
+                   style="width: 99%;"
+                   lay-verify="required" onclick="add_project(this)">
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+    <div class="layui-form-item" style="width: 100%;">
+        <label class="layui-form-label">标答</label>
+        <div class="layui-input-inline" style="width:60%;" id="answer">
+            <input name="answer" type="radio" value="0" index="0" checked="" title="A" lay-skin="primary">
+            <input name="answer" type="radio" value="1" index="1" title="B" lay-skin="primary">
+            <input name="answer" type="radio" value="2" index="2" title="C" lay-skin="primary">
+            <input name="answer" type="radio" value="3" index="3" title="D" lay-skin="primary">
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+    <div class="layui-form-item" style="width: 100%;">
+        <label class="layui-form-label">解析</label>
+        <div class="layui-input-inline" style="width:60%;">
+            <input type="text" id="analyze" name="analyze" autocomplete="off" class="layui-input" style="width: 99%;"
+                   onclick="add_project(this)">
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+    <div class="layui-form-item" style="width: 100%;">
+        <label class="layui-form-label">分值</label>
+        <div class="layui-input-inline" style="width: 60%;">
+            <!--            <div id="score" class="demo-slider" style="margin-top: 20px;margin-left: 10px;"></div>-->
+            <!--            <div  class="demo-slider" style="margin-top: 20px;margin-left: 10px;"></div>-->
+            <input type="text" id="score" placeholder="分数" class="layui-input"/>
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+    <div class="layui-form-item" id="did_1646542116995_9" cpt_id="rate" style="width: 100%;">
+        <label class="layui-form-label">难度</label>
+        <div class="layui-input-inline" id="" style="width: 60%;">
+            <div style="margin-left: 10px; " id="rate"></div>
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+
+    <div class="layui-form-item" style="width: 100%;">
+        <label class="layui-form-label">知识点</label>
+        <div class="layui-input-inline" style="width:60%;">
+            <input type="text" id="knowledge_point" name="knowledge_point" autocomplete="off" class="layui-input"
+                   style="width: 99%;">
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+
+<!--    <div class="layui-form-item">-->
+<!--        <div class="layui-form-label">排序号</div>-->
+<!--        <div class="layui-input-block">-->
+<!--            <div class="number-input-container auto-container">-->
+<!--                <div class="number-input-subtract auto-subtract"><i class="layui-icon layui-icon-subtraction"></i></div>-->
+<!--                <input type="text" placeholder="序号" class="layui-input number-input-input auto-input" id="sort"-->
+<!--                       data-default-value="10" style="width: 100px;">-->
+<!--                <div class="number-input-add auto-add"><i class="layui-icon layui-icon-addition"></i></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
+    <div class="layui-form-item" style="margin-top: 20px;" cpt_id="submitData">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit="postButton" lay-filter="postButton" id="postButton"
+                    style="margin-left: 130px;">提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <button class="layui-btn" lay-filter="preview">预览</button>
+        </div>
+
+    </div>
+
+</form>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
+<script type="text/javascript" src="../js/util.charset.js"></script>
+<script type="text/javascript" src="../js/base64.js"></script>
+
+<script type="text/javascript">
+    layui
+        .config({
+            base: "../layui-exts/",
+        })
+        .extend({
+            numberInput: "numberInput/js/index",
+        });
+    layui.use(['element', 'rate', 'slider', 'form', 'layer', 'numberInput'], function () {
+        var $ = layui.jquery,
+            element = layui.element,
+            rate = layui.rate,
+            slider = layui.slider,
+            form = layui.form,
+            layer = layui.layer,
+            numberInput = layui.numberInput;
+        // 使用
+        numberInput.render("#score",{
+            autoSelcet: false,
+            max: 100,
+            min: 0,
+            precision: 1,
+        });
+
+        //基础效果
+        rate.render({
+            value: 1,
+            elem: '#rate'
+        });
+        //开启输入框
+        slider.render({
+            elem: '#score'
+            , input: true //输入框
+            , value: 1
+            , theme: '#FF5722' //主题色
+        });
+
+
+        form.on('submit(postButton)',function (data) {
+            layer.msg("确认提交?")
+
+        });
+
+    });
+
+
+    function add_project(o) {
+        if (o.value == '' || o.value == null) {
+            // alert('x')
+        }
+        var content = encodeURIComponent(Util.charset.Base64.encode(o.value, "utf8"));
+        layer.open({
+            title: '',
+            type: 2,
+            offset: 'auto',
+            area: ['75%', '50%'],
+            closeBtn: 0,
+            content: ['../questions/edit' + '?id=' + o.id + '&content=' + content, 'no'],
+            scrollbar: false,
+            btn: ['确定', '取消'],
+            yes: function (index, layero) {
+                var content_end = $(layero).find("iframe")[0].contentWindow.callbackdata();
+                document.getElementById(o.id).value = content_end;
+                layer.close(index); //关闭弹窗
+            },
+            cancel: function () {
+                layer.closeAll();
+            },
+        });
+    };
+
+</script>
+
+</body>
+</html>

@@ -35,13 +35,14 @@ public class TestPageController {
     @RequestMapping(value = "/uetest")
     public String uetest(Model model, HttpServletRequest request){
         String id = String.valueOf(request.getParameter("id"));
-//        String content = String.valueOf(request.getParameter("content").replace("\\*","\\+"));
+//        String content = String.valueOf(request.getParameter("content").replace("\\$","\\+"));
         String content = String.valueOf(request.getParameter("content"));
         String index = String.valueOf(request.getParameter("index"));
         model.addAttribute("id",id);
-        model.addAttribute("content", Base64Util.Base64Decode(content,"UTF-8"));
+//        model.addAttribute("content", Base64Util.Base64Decode(content,"UTF-8"));
+        model.addAttribute("content", content);
         model.addAttribute("index",index);
-        return "uetest";
+        return "uetest2";
     }
 
     @ResponseBody

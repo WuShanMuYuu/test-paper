@@ -1,0 +1,160 @@
+<!--author:adminj-->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AdminJ FormDesigner</title>
+    <link rel="stylesheet" href="adminj/libs/layui/css/layui.css?v=1">
+    <link rel="stylesheet" href="adminj/libs/select2/css/select2.min.css">
+    <script src="adminj/libs/layui/layui.js?2.6.8"></script>
+    <script src="adminj/libs/jquery/jquery-3.6.0.min.js"></script>
+    <script src="adminj/libs/sortable/sortable.min.js"></script>
+    <script src="adminj/libs/sortable/jquery-sortable.js"></script>
+    <script src="adminj/libs/select2/js/select2.full.min.js"></script>
+    <script src="adminj/libs/ckeditor5/ckeditor.js"></script>
+
+    <script src="adminj/modules/adminj_utils.js"></script>
+
+</head>
+
+<body>
+    <form action="browse.jsp" method="post" target="_blank id=" browseResultForm">
+        <input type="hidden" name="resHtml" id="resHtml" /><input type="submit" name="button" id="submitHtml" value="提交"
+            style="display: none;" />
+    </form>
+
+    <div class="layui-form">
+        <div class="adminj-ds-top-left">AdminJ LayuiFormRender</div>
+        <div class="adminj-ds-top-right">
+            <button type="button" class="layui-btn layui-btn-sm" lay-filter="export" id="exportForm">
+                <i class="layui-icon layui-icon-download-circle" style="font-size: 1.2em"></i> 导出HTML代码
+            </button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-filter="exportJSON" id="exportJSON">
+                <i class="layui-icon layui-icon-download-circle" style="font-size: 1.2em"></i> 导出JSON
+            </button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-filter="itemJson" id="itemJson">
+                <i class="layui-icon layui-icon-download-circle" style="font-size: 1.2em"></i> 当前选择项JSON
+            </button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-filter="importJSON" id="importJSON">
+                <i class="layui-icon layui-icon-upload-drag" style="font-size: 1.2em"></i> 导入JSON
+            </button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-filter="importHtmlJSON" id="importHtmlJSON">
+                <i class="layui-icon layui-icon-upload-drag" style="font-size: 1.2em"></i> 导入HTML JSON
+            </button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-filter="browseResult" id="browseResult">
+                <i class="layui-icon layui-icon-website" style="font-size: 1.2em"></i> 预览
+            </button>
+        </div>
+    </div>
+
+    <div id='adminJLayuiFormRender'></div>
+    
+</body>
+
+</html>
+
+
+<script>
+
+    function showLayerTextarea(val) {//显示有textarea的弹出层
+        layui.layer.open({
+            type: 1,
+            closeBtn: 1,
+            shadeClose: true,
+            area: ['80%', '90%'],
+            content: '<textarea id="outprint_textarea" style="width: 98%;height: 97%; margin-left: 1%;margin-top: 1%;"></textarea>',//'+val+'
+            success: function (layero, index) {
+                $('#outprint_textarea').text(val);
+            }
+        });
+    }
+    function showImportLayerTextarea(formRender, type) {//导入json
+        var that = this;
+        layui.layer.open({
+            type: 1,
+            closeBtn: 1,
+            shadeClose: true,
+            area: ['80%', '90%'],
+            content: '<textarea id="outprint_textarea" style="width: 98%;height: 97%; margin-left: 1%;margin-top: 1%;"></textarea>'
+            , btn: ['确定', '取消']
+            , yes: function (index, layero) {
+                if (type == 'htmlJSON') {
+                    formRender.importHtmlJSON($('#outprint_textarea').val());
+                } else {
+                    formRender.importJSON($('#outprint_textarea').val());
+                }
+                layui.layer.close(index);
+            }, btn2: function (index, layero) {
+            }
+        });
+    }
+
+
+    layui.config({
+        //dir: '/res/layui/'
+        version: false
+        , debug: false
+        , base: './adminj/modules/'
+    }).use(['adminJLayuiFormRender'], function () {
+        var formRender = layui.adminJLayuiFormRender;
+        formRender.render({id:'adminJLayuiFormRender'});
+        $ = layui.$
+
+        try {
+            $('#importHtmlJSON').mouseenter(function(){
+                layui.layer.tips('导出HTML代码里_json的内容','#importHtmlJSON',{tips: [1, '#3595CC'],})
+            })
+            $('#importJSON').mouseenter(function(){
+                layui.layer.tips('导出JSON的内容','#importJSON',{tips: [1, '#3595CC'],})
+            })
+
+
+            $('#exportForm').click(function () {
+                var html = formRender.exportToHTML();
+                showLayerTextarea(html);
+            });
+
+            $('#importJSON').click(function () {
+                showImportLayerTextarea(formRender, '');
+            })
+
+            $('#importHtmlJSON').click(function () {
+                showImportLayerTextarea(formRender, 'htmlJSON');
+            })
+
+            $('#itemJson').click(function () {
+                var json = '';
+                $('#sortable').find('.adminj-select-sort-item').each(function (i, e) {
+                    var divId = $(this).attr('id');
+                    json = JSON.stringify(formRender.propertiesMap[divId]);
+                });
+                showLayerTextarea(json);
+
+            });
+
+            $('#exportJSON').click(function () {
+                var json = formRender.exportJSON();
+                showLayerTextarea(json);
+            })
+
+            $('#browseResult').click(function () {
+                var res = formRender.exportToHTML();
+                $('#resHtml').val(res);
+                $('#submitHtml').trigger('click');
+            })
+
+            var winHeight = $(window).height() - 10;
+            if ($('.adminj-ds-center').height() < winHeight) {
+                $('.adminj-ds-center').css('min-height', winHeight - $('.adminj-ds-center').css('top'))
+            }
+
+        } catch (e) {
+            alert("error:" + e)
+        }
+
+    });
+
+
+</script>
