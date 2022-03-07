@@ -27,4 +27,12 @@ public class QuestionsController {
         return "/Questions/edit";
     }
 
+    @RequestMapping(value = "/SelectPoint")
+    public String selectPoint(Model model, HttpServletRequest request){
+        String subject_id = String.valueOf(request.getParameter("id"));
+
+
+        return "/Questions/pointSelect";
+    }
+
 }

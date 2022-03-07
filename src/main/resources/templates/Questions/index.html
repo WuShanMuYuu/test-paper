@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>试题新增</title>
+    <title>单选题编创</title>
     <link type="text/css" rel="stylesheet" href="../layui-v2.6.6/layui/css/layui.css">
 </head>
 <body>
@@ -91,7 +91,7 @@
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
-    <div class="layui-form-item" id="did_1646542116995_9" cpt_id="rate" style="width: 100%;">
+    <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">难度</label>
         <div class="layui-input-inline" id="" style="width: 60%;">
             <div style="margin-left: 10px; " id="rate"></div>
@@ -103,7 +103,7 @@
         <label class="layui-form-label">知识点</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="knowledge_point" name="knowledge_point" autocomplete="off" class="layui-input"
-                   style="width: 99%;">
+                   style="width: 99%;" onfocus="add_point(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -156,10 +156,12 @@
             numberInput = layui.numberInput;
         // 使用
         numberInput.render("#score",{
+            value:0,
             autoSelcet: false,
             max: 100,
             min: 0,
             precision: 1,
+            step:0.5
         });
 
         //基础效果
@@ -209,6 +211,23 @@
         });
     };
 
+    function add_point(o) {
+        console.log("id: "+$("#subject").val());
+        layer.open({
+            //弹出point选择
+            title: '',
+            type: 2,
+            offset: 'auto',
+            area: ['45%', '50%'],
+            // area: ['20%', '30%'],
+            closeBtn: 0,
+            content: ['../questions/SelectPoint' + '?id=' + $("#subject").val() , 'no'],
+            scrollbar: false,
+            btn: ['确定', '取消'],
+
+        })
+    }
+    
 </script>
 
 </body>
