@@ -18,8 +18,7 @@
 
     window.UEDITOR_CONFIG = {
         UEDITOR_HOME_URL: s,
-        // serverUrl: "/api/admin/upload/configAndUpload",
-        serverUrl: "/uetest/admin/upload/configAndUpload",
+        serverUrl: "/questions/admin/upload/configAndUpload",
         toolbars: [["fullscreen", "source", "|", "bold", "italic", "underline", "forecolor", "fontfamily", "fontsize", "|", "justifyleft", "justifycenter", "justifyright", "justifyjustify", "|", "insertimage", "inserttable", "gapfilling"]],
         labelMap: {anchor: "", undo: ""},
         enableAutoSave: !1,

@@ -6,7 +6,7 @@
     <link type="text/css" rel="stylesheet" href="../layui-v2.6.6/layui/css/layui.css">
 </head>
 <body>
-<form class="layui-form" id="form" lay-filter="form" action="">
+<form class="layui-form" id="form" lay-filter="form" action="" style="margin-left: 5rem;">
     <div class="layui-form-item" id="subject_0" style="width: 100%;margin-top: 20px;">
         <label class="layui-form-label">学科</label>
         <div class="layui-input-inline">
@@ -67,7 +67,7 @@
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">标答</label>
         <div class="layui-input-inline" style="width:60%;" id="answer">
-            <input name="answer" type="radio" value="0" index="0" checked="" title="A" lay-skin="primary">
+            <input name="answer" type="radio" value="0" index="0" title="A" lay-skin="primary">
             <input name="answer" type="radio" value="1" index="1" title="B" lay-skin="primary">
             <input name="answer" type="radio" value="2" index="2" title="C" lay-skin="primary">
             <input name="answer" type="radio" value="3" index="3" title="D" lay-skin="primary">
@@ -195,7 +195,7 @@
             title: '',
             type: 2,
             offset: 'auto',
-            area: ['75%', '50%'],
+            area: ['60%', '65%'],
             closeBtn: 0,
             content: ['../questions/edit' + '?id=' + o.id + '&content=' + content, 'no'],
             scrollbar: false,
