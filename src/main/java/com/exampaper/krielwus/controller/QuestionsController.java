@@ -37,6 +37,42 @@ public class QuestionsController {
     }
 
     /**
+     * 进入多选题编创
+     * @return
+     */
+    @RequestMapping(value = "/multiple-choice-index")
+    public String choice_index(){
+        return "/Questions/multiple-choice-index";
+    }
+
+    /**
+     * 进入判断题编创
+     * @return
+     */
+    @RequestMapping(value = "/judgment")
+    public String judgment(){
+        return "/Questions/judgment";
+    }
+
+    /**
+     * 填空题编创
+     * @return
+     */
+    @RequestMapping(value = "/space-topic")
+    public String space_topic(){
+        return "/Questions/fill-in-the-blank";
+    }
+
+    /**
+     * 简答题编创
+     * @return
+     */
+    @RequestMapping(value = "/answer-question")
+    public String answer_question(){
+        return "/Questions/answer-questions";
+    }
+
+    /**
      * 富文本编辑页面
      * @param model
      * @param request
