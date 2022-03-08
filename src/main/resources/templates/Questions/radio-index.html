@@ -85,16 +85,15 @@
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">分值</label>
         <div class="layui-input-inline" style="width: 60%;">
-            <!--            <div id="score" class="demo-slider" style="margin-top: 20px;margin-left: 10px;"></div>-->
-            <!--            <div  class="demo-slider" style="margin-top: 20px;margin-left: 10px;"></div>-->
-            <input type="text" id="score" placeholder="分数" class="layui-input"/>
+            <input type="text" id="score" name="score" placeholder="分数" class="layui-input"/>
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">难度</label>
-        <div class="layui-input-inline" id="" style="width: 60%;">
-            <div style="margin-left: 10px; " id="rate"></div>
+        <div class="layui-input-inline" style="width: 60%;">
+            <div style="margin-left: 10px;" id="rate" name="rate" ></div>
+            <input type="text" id="difficulty" name="difficulty" style="display: none;"/>
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -108,26 +107,14 @@
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
 
-<!--    <div class="layui-form-item">-->
-<!--        <div class="layui-form-label">排序号</div>-->
-<!--        <div class="layui-input-block">-->
-<!--            <div class="number-input-container auto-container">-->
-<!--                <div class="number-input-subtract auto-subtract"><i class="layui-icon layui-icon-subtraction"></i></div>-->
-<!--                <input type="text" placeholder="序号" class="layui-input number-input-input auto-input" id="sort"-->
-<!--                       data-default-value="10" style="width: 100px;">-->
-<!--                <div class="number-input-add auto-add"><i class="layui-icon layui-icon-addition"></i></div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
-
-    <div class="layui-form-item" style="margin-top: 20px;" cpt_id="submitData">
+    <div class="layui-form-item" style="margin-top: 20px;">
         <div class="layui-input-block">
-            <button class="layui-btn layui-btn-normal" lay-submit="postButton" lay-filter="postButton" id="postButton"
-                    style="margin-left: 130px;">提交
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="postButton"
+                    id="postButton" style="margin-left: 3rem;">提交
             </button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-            <button class="layui-btn" lay-filter="preview">预览</button>
+            <button type="button" class="layui-btn layui-btn-warm" id="add" >新增选项</button>
+            <button class="layui-btn" lay-filter="preview" id="preview">预览</button>
         </div>
 
     </div>
@@ -166,8 +153,12 @@
 
         //基础效果
         rate.render({
+            elem: '#rate',
             value: 1,
-            elem: '#rate'
+            choose: function(value){
+                $("#difficulty").val(value);
+                // document.getElementById("difficulty").value = value;
+            }
         });
         //开启输入框
         slider.render({
@@ -179,8 +170,13 @@
 
 
         form.on('submit(postButton)',function (data) {
-            layer.msg("确认提交?")
+            layer.confirm('确认提交?', {icon: -1, title:'提示'}, function(index){
+                //do something
+                console.log(JSON.stringify(data.field))
+                layer.close(index);
+            });
 
+            return false;
         });
 
     });
@@ -218,13 +214,17 @@
             title: '',
             type: 2,
             offset: 'auto',
-            area: ['45%', '50%'],
-            // area: ['20%', '30%'],
+            area: ['580px', '450px'],
             closeBtn: 0,
             content: ['../questions/SelectPoint' + '?id=' + $("#subject").val() , 'no'],
             scrollbar: false,
             btn: ['确定', '取消'],
-
+            yes: function (index, layero) {
+                var content_point = $(layero).find("iframe")[0].contentWindow.callbackpointdata();
+                // document.getElementById(o.id).value = content_end;
+                console.log("content_point："+content_point)
+                layer.close(index); //关闭弹窗
+            },
         })
     }
     

@@ -6,12 +6,17 @@
     <link type="text/css" rel="stylesheet" href="../layui-v2.6.6/layui/css/layui.css">
 </head>
 <body>
-<div id="test4" class="demo-transfer" style="margin-left: 5rem;margin-top:30px;"></div>
+<div id="select-point" class="demo-transfer" style="margin-left: 2.5rem;margin-top:30px;"></div>
 
 
 
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
+<script>
+    var callbackpointdata = function () {
+        var getData = transfer.getData('select-point');
+    }
+</script>
 <script type="text/javascript">
     layui.use(['transfer', 'layer', 'util'], function() {
         var $ = layui.$
@@ -63,13 +68,14 @@
 
         //显示搜索框
         transfer.render({
-            elem: '#test4'
+            elem: '#select-point'
             ,data: data1
             ,title: ['文本墨客', '获奖文人']
             ,showSearch: true
         })
 
-
+        //获得右侧数据
+        var getData = transfer.getData('select-point');
 
 
     });
@@ -77,7 +83,5 @@
 
 
 </script>
-
-
 </body>
 </html>
