@@ -10,10 +10,12 @@
     <div class="layui-form-item" id="subject_0" style="width: 100%;margin-top: 20px;">
         <label class="layui-form-label">学科</label>
         <div class="layui-input-inline">
-            <select id="subject" name="subject" lay-verify="required">
-                <option value="0">物理</option>
-                <option value="1">化学</option>
-                <option value="2">数学</option>
+            <select id="subject" name="subject" lay-verify="required" lay-search="">
+                <option value="">直接选择或者搜索</option>
+                <option th:each="map:${subjectList}"
+                        th:value="${map.get('id')}"
+                        th:text="${map.get('project_name')}">
+                </option>
             </select>
         </div>
         <div class="layui-form-mid layui-word-aux">学科</div>
@@ -204,29 +206,39 @@
             cancel: function () {
                 layer.closeAll();
             },
+            id: 'LAY_add_project' //设定一个id，防止重复弹出
         });
     };
 
     function add_point(o) {
-        console.log("id: "+$("#subject").val());
-        layer.open({
-            //弹出point选择
-            title: '',
-            type: 2,
-            offset: 'auto',
-            area: ['580px', '450px'],
-            closeBtn: 0,
-            content: ['../questions/SelectPoint' + '?id=' + $("#subject").val() , 'no'],
-            scrollbar: false,
-            btn: ['确定', '取消'],
-            yes: function (index, layero) {
-                var content_point = $(layero).find("iframe")[0].contentWindow.callbackpointdata();
-                // document.getElementById(o.id).value = content_end;
-                console.log("content_point："+content_point)
-                layer.close(index); //关闭弹窗
-            },
-        })
-    }
+        var project_id = $("#subject").val();
+        console.log("id: "+project_id);
+        if (null == project_id || '' == project_id){
+            layer.msg("关联学科不能为空！");
+            return false;
+        }else{
+            layer.open({
+                //弹出point选择
+                title: '',
+                type: 2,
+                offset: 'auto',
+                area: ['580px', '450px'],
+                closeBtn: 0,
+                content: ['../questions/SelectPoint' + '?id=' + project_id , 'no'],
+                scrollbar: false,
+                btn: ['确定', '取消'],
+                yes: function (index, layero) {
+                    var content_point = $(layero).find("iframe")[0].contentWindow.callbackpointdata();
+                    // document.getElementById(o.id).value = content_end;
+                    console.log("content_point："+content_point)
+                    layer.close(index); //关闭弹窗
+                },
+                id: 'LAY_add_point' //设定一个id，防止重复弹出
+            })
+
+        }
+
+    };
     
 </script>
 

@@ -1,8 +1,12 @@
 package com.exampaper.krielwus.controller;
 
+import com.exampaper.krielwus.layuiInfo.transferInfo;
 import com.exampaper.krielwus.templates.interfaces.interfaceImpl.FileUploadImpl;
 import com.exampaper.krielwus.ueditor.UeditorConfigVM;
 import com.exampaper.krielwus.ueditor.UploadResultVM;
+import com.exampaper.krielwus.utils.Base64Util;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,11 +18,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/questions")
 public class QuestionsController {
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     /**
      * 定义上传组件变量
@@ -29,83 +40,106 @@ public class QuestionsController {
 
     /**
      * 进入单选题编创
+     *
      * @return
      */
     @RequestMapping(value = "/radio-index")
-    public String index(){
+    public String index(Model model) {
+        String sql = "select epi.id as id , epi.project_name as project_name from test_paper.em_project_info epi order by epi.sort asc";
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+//        maps.forEach(map -> System.out.println(String.valueOf(map.get("project_name"))));
+        model.addAttribute("subjectList", maps);
         return "/Questions/radio-index";
     }
 
     /**
      * 进入多选题编创
+     *
      * @return
      */
     @RequestMapping(value = "/multiple-choice-index")
-    public String choice_index(){
+    public String choice_index(Model model) {
+        String sql = "select epi.id as id , epi.project_name as project_name from test_paper.em_project_info epi order by epi.sort asc";
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+//        maps.forEach(map -> System.out.println(String.valueOf(map.get("project_name"))));
+        model.addAttribute("subjectList", maps);
         return "/Questions/multiple-choice-index";
     }
 
     /**
      * 进入判断题编创
+     *
      * @return
      */
     @RequestMapping(value = "/judgment")
-    public String judgment(){
+    public String judgment() {
         return "/Questions/judgment";
     }
 
     /**
      * 填空题编创
+     *
      * @return
      */
     @RequestMapping(value = "/space-topic")
-    public String space_topic(){
+    public String space_topic() {
         return "/Questions/fill-in-the-blank";
     }
 
     /**
      * 简答题编创
+     *
      * @return
      */
     @RequestMapping(value = "/answer-question")
-    public String answer_question(){
+    public String answer_question() {
         return "/Questions/answer-questions";
     }
 
     /**
      * 富文本编辑页面
+     *
      * @param model
      * @param request
      * @return
      */
     @RequestMapping(value = "/edit")
-    public String uetest(Model model, HttpServletRequest request){
+    public String uetest(Model model, HttpServletRequest request) {
         String id = String.valueOf(request.getParameter("id"));
         String content = String.valueOf(request.getParameter("content"));
         String index = String.valueOf(request.getParameter("index"));
-        model.addAttribute("id",id);
+        model.addAttribute("id", id);
         model.addAttribute("content", content);
-        model.addAttribute("index",index);
+        model.addAttribute("index", index);
         return "/Questions/edit";
     }
 
     /**
      * 知识点选型
+     *
      * @param model
      * @param request
      * @return
      */
     @RequestMapping(value = "/SelectPoint")
-    public String selectPoint(Model model, HttpServletRequest request){
+    public String selectPoint(Model model, HttpServletRequest request) {
         String subject_id = String.valueOf(request.getParameter("id"));
-
-
+        String sql = "SELECT eui.id as value ,eui.name as title FROM test_paper.em_unit_info eui where eui.project_id = " + Integer.valueOf(subject_id) + " and eui.level in (3,4) order by eui.sort asc ";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+        StringBuffer stringBuffer = new StringBuffer("[");
+        list.forEach(map -> {
+            stringBuffer.append("{\"value\": \"" + map.get("value") + "\", \"title\": \"" + map.get("title") + "\"},");
+        });
+        stringBuffer.append("]");
+        String buffer = stringBuffer.toString().trim();
+        model.addAttribute("PointList", buffer);
         return "/Questions/pointSelect";
     }
 
 
     /**
      * 文件传方法
+     *
      * @param request
      * @param response
      * @return
@@ -123,7 +157,7 @@ public class QuestionsController {
                 String filePath;
                 try (InputStream inputStream = multipartFile.getInputStream()) {
 //                    filePath = fileUpload.uploadFile(inputStream, attachSize, imgName);
-                    filePath = new FileUploadImpl().uploadMultipartFile(multipartFile,imgName);
+                    filePath = new FileUploadImpl().uploadMultipartFile(multipartFile, imgName);
                 }
                 String imageType = imgName.substring(imgName.lastIndexOf("."));
                 UploadResultVM uploadResultVM = new UploadResultVM();
@@ -152,8 +186,4 @@ public class QuestionsController {
         }
         return null;
     }
-
-
-
-
 }

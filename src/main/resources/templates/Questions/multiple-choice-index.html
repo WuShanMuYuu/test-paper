@@ -10,10 +10,12 @@
     <div class="layui-form-item" id="subject_0" style="width: 100%;margin-top: 20px;">
         <label class="layui-form-label">学科</label>
         <div class="layui-input-inline">
-            <select id="subject" name="subject" lay-verify="required">
-                <option value="0">物理</option>
-                <option value="1">化学</option>
-                <option value="2">数学</option>
+            <select id="subject" name="subject" lay-verify="required" lay-search="">
+                <option value="">直接选择或者搜索</option>
+                <option th:each="map:${subjectList}"
+                        th:value="${map.get('id')}"
+                        th:text="${map.get('project_name')}">
+                </option>
             </select>
         </div>
         <div class="layui-form-mid layui-word-aux">学科</div>
