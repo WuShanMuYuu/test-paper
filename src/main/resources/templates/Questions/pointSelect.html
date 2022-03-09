@@ -12,36 +12,20 @@
 <script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
 <script type="text/javascript" src="../js/util.charset.js"></script>
 <script type="text/javascript" src="../js/base64.js"></script>
-<script>
-    var callbackpointdata = function () {
-        var getData = transfer.getData('select-point');
-    }
-</script>
 <script type="text/javascript" th:inline="javascript">
-    layui.use(['transfer', 'layer', 'util'], function() {
-        var $ = layui.$
-            , transfer = layui.transfer
-            , layer = layui.layer
-            , util = layui.util;
-        var data1 = eval(decodeURIComponent([[${PointList}]]));
+    var $ = layui.$,transfer = layui.transfer;
+    var data1 = eval(decodeURIComponent([[${PointList}]]));
+    transfer.render({
+        elem: '#select-point'
+        ,data: data1
+        ,title: ['待选考点', '已选考点']
+        ,showSearch: true
+        ,id:'point'
+    })
 
-
-        //显示搜索框
-        transfer.render({
-            elem: '#select-point'
-            ,data: data1
-            ,title: ['待选考点', '已选考点']
-            ,showSearch: true
-        })
-
-        //获得右侧数据
-        var getData = transfer.getData('select-point');
-
-
-    });
-
-
-
+    function callbackpointdata() {
+        return transfer.getData('point');
+    }
 </script>
 </body>
 </html>

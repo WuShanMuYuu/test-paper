@@ -94,7 +94,7 @@
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">难度</label>
         <div class="layui-input-inline" style="width: 60%;">
-            <div style="margin-left: 10px;" id="rate" name="rate" ></div>
+            <div style="margin-left: 10px;" id="rate" name="rate"></div>
             <input type="text" id="difficulty" name="difficulty" style="display: none;"/>
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
@@ -115,7 +115,7 @@
                     id="postButton" style="margin-left: 3rem;">提交
             </button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-            <button type="button" class="layui-btn layui-btn-warm" id="add" >新增选项</button>
+            <button type="button" class="layui-btn layui-btn-warm" id="add">新增选项</button>
             <button class="layui-btn" lay-filter="preview" id="preview">预览</button>
         </div>
 
@@ -124,6 +124,8 @@
 </form>
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
+<!--<script type="text/javascript" src="../layui-v2.6.6/layui/notify/notify.js"></script>-->
+<script type="text/javascript" src="../layui-v2.6.6/layui/notify_stand.js"></script>
 <script type="text/javascript" src="../js/util.charset.js"></script>
 <script type="text/javascript" src="../js/base64.js"></script>
 
@@ -144,20 +146,20 @@
             layer = layui.layer,
             numberInput = layui.numberInput;
         // 使用
-        numberInput.render("#score",{
-            value:0,
+        numberInput.render("#score", {
+            value: 0,
             autoSelcet: false,
             max: 100,
             min: 0,
             precision: 1,
-            step:0.5
+            step: 0.5
         });
 
         //基础效果
         rate.render({
             elem: '#rate',
             value: 1,
-            choose: function(value){
+            choose: function (value) {
                 $("#difficulty").val(value);
                 // document.getElementById("difficulty").value = value;
             }
@@ -171,8 +173,8 @@
         });
 
 
-        form.on('submit(postButton)',function (data) {
-            layer.confirm('确认提交?', {icon: -1, title:'提示'}, function(index){
+        form.on('submit(postButton)', function (data) {
+            layer.confirm('确认提交?', {icon: -1, title: '提示'}, function (index) {
                 //do something
                 console.log(JSON.stringify(data.field))
                 layer.close(index);
@@ -212,11 +214,24 @@
 
     function add_point(o) {
         var project_id = $("#subject").val();
-        console.log("id: "+project_id);
-        if (null == project_id || '' == project_id){
-            layer.msg("关联学科不能为空！");
+        console.log("id: " + project_id);
+        if (null == project_id || '' == project_id) {
+            // layer.msg('学科不能置空！',{icon: 2,time:2000});
+            // layer.msg('学科不能置空!', function () {
+            //     //关闭后的操作
+            //     var point_input = document.getElementById(o.id);
+            //     point_input.blur();
+            //     $("#knowledge_point").val('');
+            // });
+            notify.warning("学科不能置空!", "topRight", function () {
+                //     //关闭后的操作
+                var point_input = document.getElementById(o.id);
+                point_input.blur();
+                $("#knowledge_point").val('');
+            });
+
             return false;
-        }else{
+        } else {
             layer.open({
                 //弹出point选择
                 title: '',
@@ -224,13 +239,17 @@
                 offset: 'auto',
                 area: ['580px', '450px'],
                 closeBtn: 0,
-                content: ['../questions/SelectPoint' + '?id=' + project_id , 'no'],
+                content: ['../questions/SelectPoint' + '?id=' + project_id, 'no'],
                 scrollbar: false,
                 btn: ['确定', '取消'],
                 yes: function (index, layero) {
-                    var content_point = $(layero).find("iframe")[0].contentWindow.callbackpointdata();
-                    // document.getElementById(o.id).value = content_end;
-                    console.log("content_point："+content_point)
+                    var pointList = $(layero).find("iframe")[0].contentWindow.callbackpointdata();
+                    console.log("content_point：" + JSON.stringify(pointList));
+                    for (let i = 0; i < pointList.length; i++) {
+                        console.log(i+"  value:"+pointList[i].value);
+                        console.log(i+"  title:"+pointList[i].title);
+                    }
+                    $("#knowledge_point").val('<span class="layui-badge layui-bg-blue">蓝</span>')
                     layer.close(index); //关闭弹窗
                 },
                 id: 'LAY_add_point' //设定一个id，防止重复弹出
@@ -239,7 +258,7 @@
         }
 
     };
-    
+
 </script>
 
 </body>

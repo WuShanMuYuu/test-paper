@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/layui/2.6.8/layui.min.js"></script>
+    <script src="notify.js"></script>
+    <style>
+        body{text-align: center;}
+    </style>
+</head>
+<body>
+<h1>演示</h1>
+<div style="margin-top: 300px">
+    <button id="info">提示</button>
+    <button id="warning">警告</button>
+    <button id="success">成功</button>
+    <button id="error">错误</button>
+    <button id="loading">加载</button>
+    <button id="noclose">不显示关闭按钮</button>
+    <button id="close">关闭时回调</button>
+    <button id="destroyAll">关闭全部</button>
+    <button id="topLeft">左上</button>
+    <button id="topRight">右上</button>
+    <button id="bottomLeft">左下</button>
+    <button id="bottomCenter">中下</button>
+    <button id="bottomRight">右下</button>
+    <button id="center">正中间</button>
+    <pre style="text-align: left;line-height: 26px;width:300px;margin: auto;">
+        1、notify.info("提示消息");
+        2、notify.warning("警告消息");
+        3、notify.success("操作成功");
+        4、notify.loading("加载中");
+        5、notify.error("操作失败");
+        6、notify.error("不显示关闭按钮", false);
+        7、notify.info("提示消息", function () {
+            alert("回调成功");
+        });
+        8、notify.destroyAll(); 全部关闭
+        9、notify.info("位置显示", "topLeft"); 参数：topLeft、topCenter、topRight、bottomLeft、bottomCenter、bottomRight、center
+    </pre>
+</div>
+
+<script>
+    layui.use(['notify'],function(){
+        $("#info").click(function () {
+            notify.info("提示消息");
+        });
+
+        $("#warning").click(function () {
+            notify.warning("警告消息");
+        })
+        $("#success").click(function () {
+            notify.success("操作成功");
+        })
+        $("#loading").click(function () {
+            notify.loading("加载中");
+        })
+        $("#error").click(function () {
+            notify.error("操作失败");
+        })
+        $("#noclose").click(function () {
+            notify.error("不显示关闭按钮", false);
+        })
+        $("#close").click(function () {
+            notify.info("提示消息", function () {
+                alert("回调成功");
+            });
+        });
+        $("#destroyAll").click(function () {
+            notify.destroyAll();
+        })
+        $("#topLeft").click(function () {
+            notify.info("左上", "topLeft");
+        })
+        $("#topRight").click(function () {
+            notify.info("右上", "topRight");
+        })
+        $("#bottomLeft").click(function () {
+            notify.info("左下", "bottomLeft");
+        })
+        $("#bottomRight").click(function () {
+            notify.info("右下", "bottomRight");
+        })
+        $("#bottomCenter").click(function () {
+            notify.info("中下", "bottomCenter");
+        })
+        $("#center").click(function () {
+            notify.info("正中", "center");
+        })
+    })
+
+</script>
+</body>
+</html>
