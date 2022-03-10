@@ -246,8 +246,8 @@
                     var pointList = $(layero).find("iframe")[0].contentWindow.callbackpointdata();
                     console.log("content_point：" + JSON.stringify(pointList));
                     for (let i = 0; i < pointList.length; i++) {
-                        console.log(i+"  value:"+pointList[i].value);
-                        console.log(i+"  title:"+pointList[i].title);
+                        console.log(i + "  value:" + pointList[i].value);
+                        console.log(i + "  title:" + pointList[i].title);
                     }
                     $("#knowledge_point").val('<span class="layui-badge layui-bg-blue">蓝</span>')
                     layer.close(index); //关闭弹窗
