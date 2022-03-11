@@ -136,6 +136,19 @@ public class QuestionsController {
         return "/Questions/pointSelect";
     }
 
+    /**
+     * 问题预览页面
+     * @param model
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/question-preview")
+    public String questionPreview(Model model, HttpServletRequest request) {
+        String subject_id = String.valueOf(request.getParameter("id"));
+
+
+        return "/Questions/question-preview";
+    }
 
     /**
      * 文件传方法
