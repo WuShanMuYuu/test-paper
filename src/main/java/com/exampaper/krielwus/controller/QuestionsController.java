@@ -53,6 +53,30 @@ public class QuestionsController {
     }
 
     /**
+     * 单选题目插入
+     * @return
+     */
+    @RequestMapping(value = "/insertRadio")
+    @ResponseBody
+    public Object insertRadio(Model model,HttpServletRequest request){
+        String subject = String.valueOf(request.getParameter("subject"));
+        String exam_name = String.valueOf(request.getParameter("exam_name"));
+        String options_a = String.valueOf(request.getParameter("options_a"));
+        String options_b = String.valueOf(request.getParameter("options_b"));
+        String options_c = String.valueOf(request.getParameter("options_c"));
+        String options_d = String.valueOf(request.getParameter("options_d"));
+        String radio = String.valueOf(request.getParameter("radio"));
+        String analyze = String.valueOf(request.getParameter("analyze"));
+        String score = String.valueOf(request.getParameter("score"));
+        String difficulty = String.valueOf(request.getParameter("difficulty"));
+        String knowledge_point = String.valueOf(request.getParameter("knowledge_point"));
+
+
+
+        return null;
+    }
+
+    /**
      * 进入多选题编创
      *
      * @return
