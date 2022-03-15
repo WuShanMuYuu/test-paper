@@ -1,10 +1,8 @@
 package com.exampaper.krielwus.controller;
 
-import com.exampaper.krielwus.layuiInfo.transferInfo;
 import com.exampaper.krielwus.templates.interfaces.interfaceImpl.FileUploadImpl;
 import com.exampaper.krielwus.ueditor.UeditorConfigVM;
 import com.exampaper.krielwus.ueditor.UploadResultVM;
-import com.exampaper.krielwus.utils.Base64Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -13,14 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import com.alibaba.fastjson.JSONObject;
+import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +49,48 @@ public class QuestionsController {
 //        maps.forEach(map -> System.out.println(String.valueOf(map.get("project_name"))));
         model.addAttribute("subjectList", maps);
         return "/Questions/radio-index";
+    }
+
+    /**
+     * 单选题目插入
+     *
+     * @return
+     */
+    @RequestMapping(value = "/insertRadio")
+    @ResponseBody
+    public Object insertRadio(Model model, HttpServletRequest request) {
+        Map resultMap = new HashMap(16);
+        String jsonStr = String.valueOf(request.getParameter("postData"));
+        if (StringUtils.isEmpty(jsonStr)) {
+            resultMap.put("code", "-1");
+            resultMap.put("message", "提交信息为空!");
+            return resultMap;
+        }
+        //String转JSON
+        String insert_questions = "INSERT INTO test_paper.em_question_info (create_time, question_content) VALUES(now(), '" + jsonStr + "')";
+        jdbcTemplate.execute(insert_questions);
+
+        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+        String subject_id = String.valueOf(jsonObject.get("subject"));
+        String question_content = String.valueOf(jsonObject.get("question_content"));
+        String options_a = String.valueOf(jsonObject.get("options_a"));
+        String options_b = String.valueOf(jsonObject.get("options_b"));
+        String options_c = String.valueOf(jsonObject.get("options_c"));
+        String options_d = String.valueOf(jsonObject.get("options_d"));
+        String answer = String.valueOf(jsonObject.get("answer"));
+        String analyze = String.valueOf(jsonObject.get("analyze"));
+        String score = String.valueOf(jsonObject.get("score"));
+        String difficulty = String.valueOf(jsonObject.get("difficulty"));
+        String knowledge_point = String.valueOf(jsonObject.get("knowledge_point"));
+        //单选题类型type=1
+        String question_type = "1";
+
+        String insert_Str = "";
+        jdbcTemplate.execute(insert_Str);
+
+        resultMap.put("code", "1");
+        resultMap.put("message", "提交信息成功!");
+        return resultMap;
     }
 
     /**
@@ -138,6 +179,7 @@ public class QuestionsController {
 
     /**
      * 问题预览页面
+     *
      * @param model
      * @param request
      * @return

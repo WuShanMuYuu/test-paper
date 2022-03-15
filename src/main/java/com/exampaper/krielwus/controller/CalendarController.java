@@ -28,20 +28,20 @@ public class CalendarController {
     JdbcTemplate jdbcTemplate;
 
     @RequestMapping(value = "/index")
-    public String index(Model model, HttpServletRequest request){
+    public String index(Model model, HttpServletRequest request) {
 
         return "CalendarNote/index";
     }
 
     @RequestMapping(value = "/queryNote")
     @ResponseBody
-    public Object queryNote(Model model, HttpServletRequest request){
+    public Object queryNote(Model model, HttpServletRequest request) {
         JSONObject jsonObject = new JSONObject();
         String sql = "select eci.note_time ,eci.note_content from test_paper.em_calendar_info eci";
         List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
         maps.forEach(map -> {
             try {
-                jsonObject.put(String.valueOf(map.get("note_time")),String.valueOf(map.get("note_content")));
+                jsonObject.put(String.valueOf(map.get("note_time")), String.valueOf(map.get("note_content")));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -51,30 +51,37 @@ public class CalendarController {
 
     @RequestMapping(value = "/insert")
     @ResponseBody
-    public void insertNote(Model model, HttpServletRequest request){
+    public void insertNote(Model model, HttpServletRequest request) {
         String markDate = String.valueOf(request.getParameter("markDate"));
         String markNote = String.valueOf(request.getParameter("markNote"));
-        String sql = "INSERT INTO test_paper.em_calendar_info(create_time, note_content, note_time)VALUES(now(), '"+markNote+"', '"+markDate+"')";
-        jdbcTemplate.execute(sql);
+        String querySql = "select count(1) as num from test_paper.em_calendar_info eci where eci.note_time = '" + markDate + "'";
+        Map s = jdbcTemplate.queryForMap(querySql);
+        if (Integer.valueOf(String.valueOf(s.get("num"))) >= 1) {
+            String updateStr = "update test_paper.em_calendar_info eci set eci.note_content = '" + markNote + "' where eci.note_time = '" + markDate + "'";
+            jdbcTemplate.execute(updateStr);
+        } else {
+            String sql = "INSERT INTO test_paper.em_calendar_info(create_time, note_content, note_time)VALUES(now(), '" + markNote + "', '" + markDate + "')";
+            jdbcTemplate.execute(sql);
+        }
     }
 
 
     @RequestMapping(value = "/deleteNote")
     @ResponseBody
-    public Object deleteNote(Model model, HttpServletRequest request){
+    public Object deleteNote(Model model, HttpServletRequest request) {
         Map map = new HashMap(16);
         String markDate = String.valueOf(request.getParameter("markDate"));
         String markNote = String.valueOf(request.getParameter("markNote"));
-        String sql = "delete from test_paper.em_calendar_info where note_content = '"+markNote+"' and note_time = '"+markDate+"'";
-        try{
+        String sql = "delete from test_paper.em_calendar_info where note_content = '" + markNote + "' and note_time = '" + markDate + "'";
+        try {
             jdbcTemplate.execute(sql);
-            map.put("code","1");
-            map.put("message","success!");
+            map.put("code", "1");
+            map.put("message", "success!");
             return map;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            map.put("code","-1");
-            map.put("message",e.toString());
+            map.put("code", "-1");
+            map.put("message", e.toString());
             return map;
         }
     }

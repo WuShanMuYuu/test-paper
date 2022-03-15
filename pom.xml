@@ -60,6 +60,11 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.68</version>
+        </dependency>
 
         <!--用户权限管理-->
         <dependency>
@@ -97,7 +102,12 @@
             <artifactId>erupt-magic-api</artifactId>
             <version>${erupt.version}</version>
         </dependency>
-
+        <!--服务监控模块-->
+        <dependency>
+            <groupId>xyz.erupt</groupId>
+            <artifactId>erupt-monitor</artifactId>
+            <version>${erupt.version}</version>
+        </dependency>
 
     </dependencies>
 
