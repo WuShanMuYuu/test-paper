@@ -11,7 +11,7 @@ erupt:
   # 是否开启csrf防御
   csrfInspect: true
   # 开启redis方式存储session，默认false，开启后需在配置文件中添加redis配置
-  redisSession: false
+  redisSession: true
   # 附件上传存储路径, 默认路径为：/opt/erupt-attachment
   #  uploadPath: D:/erupt/pictures
   uploadPath: D:/erupt/pictures
@@ -66,3 +66,8 @@ spring:
 
   jackson:
     time-zone: Asia/Shanghai
+
+  redis:
+    database: 0
+    timeout: 10000
+    host: 127.0.0.1

@@ -24,7 +24,7 @@
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">题干</label>
         <div class="layui-input-inline" style="width:60%;">
-            <input type="text" id="exam_name" name="exam_name" autocomplete="off" class="layui-input"
+            <input type="text" id="question_content" name="question_content" autocomplete="off" class="layui-input"
                    style="width: 99%;"
                    lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
         </div>
@@ -69,10 +69,10 @@
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">标答</label>
         <div class="layui-input-inline" style="width:60%;" id="answer">
-            <input name="answer" type="radio" value="0" index="0" title="A" lay-skin="primary">
-            <input name="answer" type="radio" value="1" index="1" title="B" lay-skin="primary">
-            <input name="answer" type="radio" value="2" index="2" title="C" lay-skin="primary">
-            <input name="answer" type="radio" value="3" index="3" title="D" lay-skin="primary">
+            <input name="answer" type="radio" value="A" index="A" title="A" lay-skin="primary">
+            <input name="answer" type="radio" value="B" index="B" title="B" lay-skin="primary">
+            <input name="answer" type="radio" value="C" index="C" title="C" lay-skin="primary">
+            <input name="answer" type="radio" value="D" index="D" title="D" lay-skin="primary">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -175,7 +175,12 @@
 
         form.on('submit(postButton)', function (data) {
             layer.confirm('确认提交?', {icon: -1, title: '提示'}, function (index) {
-                //do something
+                //do something 往后台提交数据
+                $.post("../questions/insertRadio",{postData : JSON.stringify(data.field)},function (result) {
+
+
+                })
+
                 console.log(JSON.stringify(data.field))
                 layer.close(index);
             });
