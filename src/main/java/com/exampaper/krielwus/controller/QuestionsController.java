@@ -59,6 +59,11 @@ public class QuestionsController {
     @RequestMapping(value = "/insertRadio")
     @ResponseBody
     public Object insertRadio(Model model, HttpServletRequest request) {
+        //获取到下一个存盘ID
+        String getIndexID = "select NEXTVAL('questionSeq') as question_id from dual";
+        Map IndexMap = jdbcTemplate.queryForMap(getIndexID);
+        long question_id = Integer.valueOf(String.valueOf(IndexMap.get("question_id")));
+        //
         Map resultMap = new HashMap(16);
         String jsonStr = String.valueOf(request.getParameter("postData"));
         if (StringUtils.isEmpty(jsonStr)) {
@@ -67,7 +72,8 @@ public class QuestionsController {
             return resultMap;
         }
         //String转JSON
-        String insert_questions = "INSERT INTO test_paper.em_question_info (create_time, question_content) VALUES(now(), '" + jsonStr + "')";
+        String insert_questions = "INSERT INTO test_paper.em_question_info (id , create_time, question_content) " +
+                "VALUES("+question_id+", now(), '" + jsonStr + "')";
         jdbcTemplate.execute(insert_questions);
 
         JSONObject jsonObject = JSONObject.parseObject(jsonStr);
@@ -83,9 +89,10 @@ public class QuestionsController {
         String difficulty = String.valueOf(jsonObject.get("difficulty"));
         String knowledge_point = String.valueOf(jsonObject.get("knowledge_point"));
         //单选题类型type=1
-        String question_type = "1";
-
-        String insert_Str = "";
+//        int question_type = 1;
+        String insert_Str = "INSERT INTO test_paper.em_question_detail_info(id, answer, create_time, deleted, difficulty, " +
+                            "               project_id, question_content_id, question_type, score, states)" +
+                            "VALUES("+question_id+", '"+answer+"', now(), 1, "+difficulty+", "+subject_id+", "+question_id+", 1, "+score+", 1)";
         jdbcTemplate.execute(insert_Str);
 
         resultMap.put("code", "1");
