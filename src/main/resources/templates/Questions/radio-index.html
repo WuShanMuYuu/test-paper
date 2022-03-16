@@ -6,7 +6,7 @@
     <link type="text/css" rel="stylesheet" href="../layui-v2.6.6/layui/css/layui.css">
 </head>
 <body>
-<form class="layui-form" id="form" lay-filter="form" action="" style="margin-left: 5rem;">
+<form class="layui-form" id="addQuestionForm" lay-filter="addQuestionForm" action="" style="margin-left: 5rem;">
     <div class="layui-form-item" id="subject_0" style="width: 100%;margin-top: 20px;">
         <label class="layui-form-label">学科</label>
         <div class="layui-input-inline">
@@ -111,12 +111,10 @@
 
     <div class="layui-form-item" style="margin-top: 20px;">
         <div class="layui-input-block">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="postButton"
-                    id="postButton" style="margin-left: 3rem;">提交
-            </button>
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="postButton" id="postButton" style="margin-left: 3rem;">提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-            <button type="button" class="layui-btn layui-btn-warm" id="add">新增选项</button>
-            <button class="layui-btn" lay-filter="preview" id="preview">预览</button>
+            <button type="button" class="layui-btn layui-btn-warm" lay-submit lay-filter="addOptions" id="add">新增选项</button>
+            <button class="layui-btn" lay-submit lay-filter="preview" id="preview">预览</button>
         </div>
 
     </div>
@@ -175,19 +173,52 @@
 
         form.on('submit(postButton)', function (data) {
             layer.confirm('确认提交?', {icon: -1, title: '提示'}, function (index) {
+                console.log(JSON.stringify(data.field))
                 //do something 往后台提交数据
                 $.post("../questions/insertRadio",{postData : JSON.stringify(data.field)},function (result) {
-
-
+                    if("1" == result.code || 1 == result.code){
+                        //提交成功清空表单
+                        notify.success(result.message, "topRight");
+                        $("#addQuestionForm")[0].reset();
+                        layui.form.render();
+                        layer.close(index);
+                    }else{
+                        notify.error(result.message, "topRight");
+                        return false;
+                    }
                 })
-
-                console.log(JSON.stringify(data.field))
-                layer.close(index);
             });
-
             return false;
         });
 
+        //预览
+        form.on('submit(preview)',function (data) {
+            console.log(JSON.stringify(data.field))
+            if (data.field.question_content == null || data.field.question_content == '' || data.field.question_content == undefined || data.field.question_content == 'undefined'){
+                notify.warning("题目内容为空，请编创题目后预览", "topRight");
+            }else{
+                layer.open({
+                    title: '',
+                    type: 2,
+                    offset: 'auto',
+                    area: ['60%', '65%'],
+                    closeBtn: 0,
+                    content: ['../questions/question-preview' + '?content=' + encodeURIComponent(Util.charset.Base64.encode(JSON.stringify(data.field), "utf8")), 'no'],
+                    // content: ['../questions/question-preview' + '?content=' + JSON.stringify(data.field), 'no'],
+                    scrollbar: false,
+                    btn: ['确定', '取消'],
+                    yes: function (index, layero) {
+                        layer.close(index); //关闭弹窗
+                    },
+                    cancel: function () {
+                        layer.closeAll();
+                    },
+                    id: 'LAY_preview_questions' //设定一个id，防止重复弹出
+                });
+                return false;
+            };
+        });
+        return false;
     });
 
 

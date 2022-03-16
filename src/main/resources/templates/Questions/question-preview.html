@@ -1,12 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>question-preview</title>
+    <link type="text/css" href="../layui-v2.6.6/layui/css/layui.css" rel="stylesheet">
 </head>
 <body>
+<!--    <h1>题目预览页面</h1>-->
 <!--    题目预览页面-->
+<div id="question_content"></div>
+<div th:text="${options_a}"></div>
+<div th:text="${options_b}"></div>
+<div th:text="${options_c}"></div>
+<div th:text="${options_d}"></div>
 
 
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
+<script type="text/javascript" src="../js/util.charset.js"></script>
+<script type="text/javascript" src="../js/base64.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    var question_content = [[${question_content}]];
+    $("#question_content").html(question_content);
+</script>
 </body>
 </html>

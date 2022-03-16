@@ -3,6 +3,7 @@ package com.exampaper.krielwus.controller;
 import com.exampaper.krielwus.templates.interfaces.interfaceImpl.FileUploadImpl;
 import com.exampaper.krielwus.ueditor.UeditorConfigVM;
 import com.exampaper.krielwus.ueditor.UploadResultVM;
+import com.exampaper.krielwus.utils.Base64Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -193,9 +194,18 @@ public class QuestionsController {
      */
     @RequestMapping(value = "/question-preview")
     public String questionPreview(Model model, HttpServletRequest request) {
-        String subject_id = String.valueOf(request.getParameter("id"));
-
-
+        String jsonStr = String.valueOf(request.getParameter("content"));
+        JSONObject jsonObject = JSONObject.parseObject(Base64Util.Base64Decode(jsonStr,"UTF-8"));
+        String question_content = String.valueOf(jsonObject.get("question_content"));
+        String options_a = String.valueOf(jsonObject.get("options_a"));
+        String options_b = String.valueOf(jsonObject.get("options_b"));
+        String options_c = String.valueOf(jsonObject.get("options_c"));
+        String options_d = String.valueOf(jsonObject.get("options_d"));
+        model.addAttribute("question_content",question_content);
+        model.addAttribute("options_a",options_a);
+        model.addAttribute("options_b",options_b);
+        model.addAttribute("options_c",options_c);
+        model.addAttribute("options_d",options_d);
         return "/Questions/question-preview";
     }
 
