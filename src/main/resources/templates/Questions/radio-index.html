@@ -10,7 +10,7 @@
     <div class="layui-form-item" id="subject_0" style="width: 100%;margin-top: 20px;">
         <label class="layui-form-label">学科</label>
         <div class="layui-input-inline">
-            <select id="subject" name="subject" lay-verify="required" lay-search="">
+            <select id="subject" name="subject" lay-search="">
                 <option value="">直接选择或者搜索</option>
                 <option th:each="map:${subjectList}"
                         th:value="${map.get('id')}"
@@ -18,24 +18,22 @@
                 </option>
             </select>
         </div>
-        <div class="layui-form-mid layui-word-aux">学科</div>
+        <div class="layui-form-mid layui-word-aux"></div>
 
     </div>
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">题干</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="question_content" name="question_content" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
-        <div class="layui-form-mid layui-word-aux">点击题干输入栏</div>
+        <div class="layui-form-mid layui-word-aux"></div>
     </div>
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">A</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="options_a" name="options_a" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -43,8 +41,7 @@
         <label class="layui-form-label">B</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="options_b" name="options_b" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -52,8 +49,7 @@
         <label class="layui-form-label">C</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="options_c" name="options_c" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -61,8 +57,7 @@
         <label class="layui-form-label">D</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="options_d" name="options_d" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -80,7 +75,7 @@
         <label class="layui-form-label">解析</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="analyze" name="analyze" autocomplete="off" class="layui-input" style="width: 99%;"
-                   onclick="add_project(this)" onfocus="add_project(this)">
+                   onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -108,6 +103,8 @@
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
+
+    <input type="text" id="question_type" name="question_type" value="1" style="display: none;"/>
 
     <div class="layui-form-item" style="margin-top: 20px;">
         <div class="layui-input-block">
@@ -172,8 +169,36 @@
 
 
         form.on('submit(postButton)', function (data) {
+            console.log(JSON.stringify(data.field));
+            if (data.field.subject == '' || data.field.subject == null){
+                notify.warning("关联学科不能为空！","topRight");
+                return false;
+            }
+            if (data.field.question_content == '' || data.field.question_content == null){
+                notify.warning("题目不能为空！","topRight");
+                return false;
+            }
+            if (data.field.options_a == '' || data.field.options_a == null){
+                notify.warning("选项A不能为空！","topRight");
+                return false;
+            }
+            if (data.field.options_b == '' || data.field.options_b == null){
+                notify.warning("选项B不能为空！","topRight");
+                return false;
+            }
+            if (data.field.options_c == '' || data.field.options_c == null){
+                notify.warning("选项C不能为空！","topRight");
+                return false;
+            }
+            if (data.field.options_d == '' || data.field.options_d == null){
+                notify.warning("选项D不能为空！","topRight");
+                return false;
+            }
+            if (data.field.answer == '' || data.field.answer == null){
+                notify.warning("答案不能为空！","topRight");
+                return false;
+            }
             layer.confirm('确认提交?', {icon: -1, title: '提示'}, function (index) {
-                console.log(JSON.stringify(data.field))
                 //do something 往后台提交数据
                 $.post("../questions/insertRadio",{postData : JSON.stringify(data.field)},function (result) {
                     if("1" == result.code || 1 == result.code){
@@ -196,6 +221,7 @@
             console.log(JSON.stringify(data.field))
             if (data.field.question_content == null || data.field.question_content == '' || data.field.question_content == undefined || data.field.question_content == 'undefined'){
                 notify.warning("题目内容为空，请编创题目后预览", "topRight");
+                return false;
             }else{
                 layer.open({
                     title: '',
@@ -217,15 +243,25 @@
                 });
                 return false;
             };
+            return false;
         });
-        return false;
+
+
+        form.on('submit(addOptions)',function (data) {
+            notify.warning("暂不支持添加选项，敬请期待！","topRight");
+            return false;
+        });
     });
 
 
     function add_project(o) {
         if (o.value == '' || o.value == null) {
             // alert('x')
+            notify.warning("关联学科不能为空！","topRight");
+            return false;
         }
+        var index_input = document.getElementById(o.id);
+        index_input.blur();
         var content = encodeURIComponent(Util.charset.Base64.encode(o.value, "utf8"));
         layer.open({
             title: '',

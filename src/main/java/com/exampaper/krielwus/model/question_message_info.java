@@ -95,7 +95,7 @@ public class question_message_info {
                     type = EditType.CHOICE,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select eqi.id as id , eqi.question_content as question_content from test_paper.em_question_info eqi"
+                            fetchHandlerParams = "select eqi.id as id , eqi.questions_text as questions_text from test_paper.em_question_info eqi"
                     )
             )
     )

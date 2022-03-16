@@ -64,41 +64,58 @@ public class QuestionsController {
         String getIndexID = "select NEXTVAL('questionSeq') as question_id from dual";
         Map IndexMap = jdbcTemplate.queryForMap(getIndexID);
         long question_id = Integer.valueOf(String.valueOf(IndexMap.get("question_id")));
-        //
         Map resultMap = new HashMap(16);
-        String jsonStr = String.valueOf(request.getParameter("postData"));
-        if (StringUtils.isEmpty(jsonStr)) {
-            resultMap.put("code", "-1");
-            resultMap.put("message", "提交信息为空!");
+        try {
+            String jsonStr = String.valueOf(request.getParameter("postData"));
+            if (StringUtils.isEmpty(jsonStr)) {
+                resultMap.put("code", "-1");
+                resultMap.put("message", "提交信息为空!");
+                return resultMap;
+            }
+            //String转JSON
+            JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+            String subject_id = String.valueOf(jsonObject.get("subject"));
+            String question_content = String.valueOf(jsonObject.get("question_content"));
+            String options_a = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">A. </span>" + String.valueOf(jsonObject.get("options_a")) + "</p>";
+            String options_b = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">B. </span>" + String.valueOf(jsonObject.get("options_b")) + "</p>";
+            String options_c = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">C. </span>" + String.valueOf(jsonObject.get("options_c")) + "</p>";
+            String options_d = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">D. </span>" + String.valueOf(jsonObject.get("options_d")) + "</p>";
+            String questionsText = question_content + options_a + options_b + options_c + options_d;
+
+            String insert_questions = "INSERT INTO test_paper.em_question_info (id , create_time, question_content,questions_text) " + "VALUES(" + question_id + ", now(), '" + jsonStr + "','" + questionsText + "')";
+            jdbcTemplate.execute(insert_questions);
+
+            String answer = String.valueOf(jsonObject.get("answer"));
+            String analyze = String.valueOf(jsonObject.get("analyze"));
+            String score = String.valueOf(jsonObject.get("score"));
+            String difficulty = String.valueOf(jsonObject.get("difficulty"));
+            String knowledge_point = String.valueOf(jsonObject.get("knowledge_point"));
+            //单选题类型type=1
+            //int question_type = 1;
+            int question_type = Integer.valueOf(String.valueOf(jsonObject.get("question_type")));
+            String insert_Str = "INSERT INTO test_paper.em_question_detail_info(id, answer, create_time, deleted, difficulty, project_id, question_content_id, question_type, score, states)VALUES(" + question_id + ", '" + answer + "', now(), 1, " + difficulty + ", " + subject_id + ", " + question_id + ", " + question_type + ", " + score + ", 1)";
+            jdbcTemplate.execute(insert_Str);
+
+            resultMap.put("code", "1");
+            resultMap.put("message", "提交信息成功!");
             return resultMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            //发生异常  删除写入数据  并将原数据写入redis缓存中
+            String detete_q = "DELETE FROM test_paper.em_question_info WHERE id ='" + getIndexID + "'";
+            String detete_detail = "DELETE FROM test_paper.em_question_detail_info WHERE id ='" + getIndexID + "'";
+            jdbcTemplate.execute(detete_q);
+            jdbcTemplate.execute(detete_detail);
+
+            /**
+             * todo
+             * 数据缓存redis
+             */
+
+            resultMap.put("code", "-1");
+            resultMap.put("message", e.toString());
+            return null;
         }
-        //String转JSON
-        String insert_questions = "INSERT INTO test_paper.em_question_info (id , create_time, question_content) " +
-                "VALUES("+question_id+", now(), '" + jsonStr + "')";
-        jdbcTemplate.execute(insert_questions);
-
-        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
-        String subject_id = String.valueOf(jsonObject.get("subject"));
-        String question_content = String.valueOf(jsonObject.get("question_content"));
-        String options_a = String.valueOf(jsonObject.get("options_a"));
-        String options_b = String.valueOf(jsonObject.get("options_b"));
-        String options_c = String.valueOf(jsonObject.get("options_c"));
-        String options_d = String.valueOf(jsonObject.get("options_d"));
-        String answer = String.valueOf(jsonObject.get("answer"));
-        String analyze = String.valueOf(jsonObject.get("analyze"));
-        String score = String.valueOf(jsonObject.get("score"));
-        String difficulty = String.valueOf(jsonObject.get("difficulty"));
-        String knowledge_point = String.valueOf(jsonObject.get("knowledge_point"));
-        //单选题类型type=1
-//        int question_type = 1;
-        String insert_Str = "INSERT INTO test_paper.em_question_detail_info(id, answer, create_time, deleted, difficulty, " +
-                            "               project_id, question_content_id, question_type, score, states)" +
-                            "VALUES("+question_id+", '"+answer+"', now(), 1, "+difficulty+", "+subject_id+", "+question_id+", 1, "+score+", 1)";
-        jdbcTemplate.execute(insert_Str);
-
-        resultMap.put("code", "1");
-        resultMap.put("message", "提交信息成功!");
-        return resultMap;
     }
 
     /**
@@ -195,22 +212,29 @@ public class QuestionsController {
     @RequestMapping(value = "/question-preview")
     public String questionPreview(Model model, HttpServletRequest request) {
         String jsonStr = String.valueOf(request.getParameter("content"));
-        JSONObject jsonObject = JSONObject.parseObject(Base64Util.Base64Decode(jsonStr,"UTF-8"));
+        JSONObject jsonObject = JSONObject.parseObject(Base64Util.Base64Decode(jsonStr, "UTF-8"));
         String question_content = String.valueOf(jsonObject.get("question_content"));
-        String options_a = String.valueOf(jsonObject.get("options_a"));
-        String options_b = String.valueOf(jsonObject.get("options_b"));
-        String options_c = String.valueOf(jsonObject.get("options_c"));
-        String options_d = String.valueOf(jsonObject.get("options_d"));
-        model.addAttribute("question_content",question_content);
-        model.addAttribute("options_a",options_a);
-        model.addAttribute("options_b",options_b);
-        model.addAttribute("options_c",options_c);
-        model.addAttribute("options_d",options_d);
+        String options_a = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">A. </span>" + String.valueOf(jsonObject.get("options_a")) + "</p>";
+        String options_b = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">B. </span>" + String.valueOf(jsonObject.get("options_b")) + "</p>";
+        String options_c = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">C. </span>" + String.valueOf(jsonObject.get("options_c")) + "</p>";
+        String options_d = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">D. </span>" + String.valueOf(jsonObject.get("options_d")) + "</p>";
+        model.addAttribute("question_content", question_content);
+        model.addAttribute("options_a", options_a);
+        model.addAttribute("options_b", options_b);
+        model.addAttribute("options_c", options_c);
+        model.addAttribute("options_d", options_d);
         return "/Questions/question-preview";
     }
 
+    @RequestMapping(value = "/print")
+    public String printPage(Model model, HttpServletRequest request) {
+
+        return "/Questions/print-page";
+    }
+
+
     /**
-     * 文件传方法
+     * 文件上传方法
      *
      * @param request
      * @param response

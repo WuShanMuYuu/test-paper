@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>A4打印页面</title>
+    <style>
+        /*横向*/
+        .a4-endwise{
+            margin: 0 auto;
+            width: 1070px;
+            height: 1550px;
+            border: 1px #ccc solid;
+            overflow: hidden;
+            padding: 0;
+            word-break:break-all;
+        }
+        /*纵向*/
+        .a4-broadwise{
+            margin: 0 auto;
+            width: 1569px;
+            height: 1073px;
+            border: 1px #000 solid;
+            overflow: hidden;
+            padding: 0;
+            word-break:break-all;
+        }
+        /*打印按钮*/
+        .print{
+            position: fixed;
+            top: 1%;
+            right: 10%;
+        }
+    </style>
+</head>
+<body>
+
+<a class="print" href="javascript:;" onclick="preview();">打印</a>
+
+<!--startprint-->
+<div class="container a4-endwise" id="test">
+    打印内容-第一页
+</div>
+<div class="container a4-endwise" id="test2">
+    打印内容-第二页
+</div>
+<!--endprint-->
+
+<script>
+    /**
+     * [打印]
+     * @return {[type]} [description]
+     */
+    function preview(){
+        //获取当前页的html代码
+        bdhtml=window.document.body.innerHTML;
+        //设置打印开始区域
+        sprnstr="<!--startprint-->";
+        //设置打印结束区域
+        eprnstr="<!--endprint-->";
+        //从开始代码向后取html
+        prnhtml=bdhtml.substring(bdhtml.indexOf(sprnstr)+18);
+        //从结束代码向前取html
+        prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));
+        window.document.body.innerHTML=prnhtml;
+        window.print();
+        window.document.body.innerHTML=bdhtml;
+    }
+</script>
+
+</body>
+</html>

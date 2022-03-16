@@ -43,11 +43,23 @@
         var form = layui.form,
             layer = layui.layer,$ = layui.jquery;
         var ue = UE.getEditor('container');
+
+        document.getElementById("edui1").focus();
         var element_id = [[(${id})]];
         var content_input = [[(${content})]];
         ue.ready(function() {
             ue.setContent(Util.charset.Base64.decode(content_input,"utf8"));
         });
+        ue.focus();
     });
 </script>
+<!--<script>-->
+<!--        获取焦点-->
+<!--    function getfocus() {-->
+<!--        document.getElementById("myText").focus();-->
+<!--    }-->
+<!--    function losefocus() {-->
+<!--        document.getElementById("myText").blur();-->
+<!--    }-->
+<!--</script>-->
 </html>

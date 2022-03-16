@@ -40,8 +40,16 @@ public class question_info {
                     type = EditType.HTML_EDITOR,
                     htmlEditorType = @HtmlEditorType(HtmlEditorType.Type.UEDITOR))
     )
-    private String question_content;
+    private String questions_text;
 
+    //富文本输入
+    @EruptField(
+            views = @View(title = "原始存盘",sortable = true),
+            edit = @Edit(title = "原始存盘",
+                    type = EditType.HTML_EDITOR,
+                    htmlEditorType = @HtmlEditorType(HtmlEditorType.Type.UEDITOR))
+    )
+    private String question_content;
     @EruptField(
             views = @View(title = "创建时间",sortable = true),
             edit = @Edit(
