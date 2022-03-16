@@ -28,7 +28,7 @@ public class question_info {
     @GenericGenerator(name = "generator",strategy = "native")
     @Column(name = "id")
     @EruptField(
-            views = @View(title = "题目编号"),
+            views = @View(title = "题目编号",width = "120px"),
             edit = @Edit(title = "题目编号",readonly = @Readonly,show = false)
     )
     private Long id;

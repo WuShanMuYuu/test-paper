@@ -6,11 +6,11 @@
     <link type="text/css" rel="stylesheet" href="../layui-v2.6.6/layui/css/layui.css">
 </head>
 <body>
-<form class="layui-form" id="form" lay-filter="form" action="" style="margin-left: 5rem;">
+<form class="layui-form" id="addQuestionForm" lay-filter="addQuestionForm" action="" style="margin-left: 5rem;">
     <div class="layui-form-item" id="subject_0" style="width: 100%;margin-top: 20px;">
         <label class="layui-form-label">学科</label>
         <div class="layui-input-inline">
-            <select id="subject" name="subject" lay-verify="required" lay-search="">
+            <select id="subject" name="subject" lay-search="">
                 <option value="">直接选择或者搜索</option>
                 <option th:each="map:${subjectList}"
                         th:value="${map.get('id')}"
@@ -18,24 +18,22 @@
                 </option>
             </select>
         </div>
-        <div class="layui-form-mid layui-word-aux">学科</div>
+        <div class="layui-form-mid layui-word-aux"></div>
 
     </div>
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">题干</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="question_content" name="question_content" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
-        <div class="layui-form-mid layui-word-aux">点击题干输入栏</div>
+        <div class="layui-form-mid layui-word-aux"></div>
     </div>
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">A</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="options_a" name="options_a" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -43,8 +41,7 @@
         <label class="layui-form-label">B</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="options_b" name="options_b" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -52,8 +49,7 @@
         <label class="layui-form-label">C</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="options_c" name="options_c" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -61,18 +57,17 @@
         <label class="layui-form-label">D</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="options_d" name="options_d" autocomplete="off" class="layui-input"
-                   style="width: 99%;"
-                   lay-verify="required" onclick="add_project(this)" onfocus="add_project(this)">
+                   style="width: 99%;" onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
     <div class="layui-form-item" style="width: 100%;">
         <label class="layui-form-label">标答</label>
-        <div class="layui-input-inline" style="width:60%;" id="answer">
-            <input name="answer" type="checkbox" value="A" index="A" title="A" lay-skin="primary">
-            <input name="answer" type="checkbox" value="B" index="B" title="B" lay-skin="primary">
-            <input name="answer" type="checkbox" value="C" index="C" title="C" lay-skin="primary">
-            <input name="answer" type="checkbox" value="D" index="D" title="D" lay-skin="primary">
+        <div class="layui-input-inline" style="width:60%;">
+            <input name="answer[a]" type="checkbox" value="A" index="A" title="A" lay-skin="primary">
+            <input name="answer[b]" type="checkbox" value="B" index="B" title="B" lay-skin="primary">
+            <input name="answer[c]" type="checkbox" value="C" index="C" title="C" lay-skin="primary">
+            <input name="answer[d]" type="checkbox" value="D" index="D" title="D" lay-skin="primary">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -80,7 +75,7 @@
         <label class="layui-form-label">解析</label>
         <div class="layui-input-inline" style="width:60%;">
             <input type="text" id="analyze" name="analyze" autocomplete="off" class="layui-input" style="width: 99%;"
-                   onclick="add_project(this)" onfocus="add_project(this)">
+                   onfocus="add_project(this)">
         </div>
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
@@ -109,14 +104,14 @@
         <div class="layui-form-mid layui-word-aux"></div>
     </div>
 
-    <div class="layui-form-item" style="margin-top: 20px;" cpt_id="submitData">
+    <input type="text" id="question_type" name="question_type" value="2" style="display: none;"/>
+
+    <div class="layui-form-item" style="margin-top: 20px;">
         <div class="layui-input-block">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="postButton"
-                    id="postButton" style="margin-left: 3rem;">提交
-            </button>
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="postButton" id="postButton" style="margin-left: 3rem;">提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-            <button type="button" class="layui-btn layui-btn-warm" id="add">新增选项</button>
-            <button class="layui-btn" lay-filter="preview" id="preview">预览</button>
+            <button type="button" class="layui-btn layui-btn-warm" lay-submit lay-filter="addOptions" id="add">新增选项</button>
+            <button class="layui-btn" lay-submit lay-filter="preview" id="preview">预览</button>
         </div>
 
     </div>
@@ -124,6 +119,7 @@
 </form>
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
+<!--<script type="text/javascript" src="../layui-v2.6.6/layui/notify/notify.js"></script>-->
 <script type="text/javascript" src="../layui-v2.6.6/layui/notify_stand.js"></script>
 <script type="text/javascript" src="../js/util.charset.js"></script>
 <script type="text/javascript" src="../js/base64.js"></script>
@@ -163,7 +159,6 @@
                 // document.getElementById("difficulty").value = value;
             }
         });
-
         //开启输入框
         slider.render({
             elem: '#score'
@@ -174,22 +169,96 @@
 
 
         form.on('submit(postButton)', function (data) {
+            var answer = '';
+            console.log(JSON.stringify(data.field));
+            if (data.field.subject == '' || data.field.subject == null){
+                notify.warning("关联学科不能为空！","topRight");
+                return false;
+            }
+            if (data.field.question_content == '' || data.field.question_content == null){
+                notify.warning("题目不能为空！","topRight");
+                return false;
+            }
+            if (data.field.options_a == '' || data.field.options_a == null){
+                notify.warning("选项A不能为空！","topRight");
+                return false;
+            }
+            if (data.field.options_b == '' || data.field.options_b == null){
+                notify.warning("选项B不能为空！","topRight");
+                return false;
+            }
+            if (data.field.options_c == '' || data.field.options_c == null){
+                notify.warning("选项C不能为空！","topRight");
+                return false;
+            }
+            if (data.field.options_d == '' || data.field.options_d == null){
+                notify.warning("选项D不能为空！","topRight");
+                return false;
+            }
             layer.confirm('确认提交?', {icon: -1, title: '提示'}, function (index) {
-                //do something
-                console.log(JSON.stringify(data.field))
-                layer.close(index);
+                //do something 往后台提交数据
+                $.post("../questions/insertCheck",{postData : JSON.stringify(data.field)},function (result) {
+                    if("1" == result.code || 1 == result.code){
+                        //提交成功清空表单
+                        notify.success(result.message, "topRight");
+                        $("#addQuestionForm")[0].reset();
+                        layui.form.render();
+                        layer.close(index);
+                    }else{
+                        notify.error(result.message, "topRight");
+                        return false;
+                    }
+                })
             });
-
             return false;
         });
 
+        //预览
+        form.on('submit(preview)',function (data) {
+            console.log(JSON.stringify(data.field))
+            if (data.field.question_content == null || data.field.question_content == '' || data.field.question_content == undefined || data.field.question_content == 'undefined'){
+                notify.warning("题目内容为空，请编创题目后预览", "topRight");
+                return false;
+            }else{
+                layer.open({
+                    title: '',
+                    type: 2,
+                    offset: 'auto',
+                    area: ['60%', '65%'],
+                    closeBtn: 0,
+                    content: ['../questions/question-preview' + '?content=' + encodeURIComponent(Util.charset.Base64.encode(JSON.stringify(data.field), "utf8")), 'no'],
+                    // content: ['../questions/question-preview' + '?content=' + JSON.stringify(data.field), 'no'],
+                    scrollbar: false,
+                    btn: ['确定', '取消'],
+                    yes: function (index, layero) {
+                        layer.close(index); //关闭弹窗
+                    },
+                    cancel: function () {
+                        layer.closeAll();
+                    },
+                    id: 'LAY_preview_questions_C' //设定一个id，防止重复弹出
+                });
+                return false;
+            };
+            return false;
+        });
+
+
+        form.on('submit(addOptions)',function (data) {
+            notify.warning("暂不支持添加选项，敬请期待！","topRight");
+            return false;
+        });
     });
 
 
     function add_project(o) {
         if (o.value == '' || o.value == null) {
             // alert('x')
+            // notify.warning("关联学科不能为空！","topRight");
+            // return false;
         }
+        var index_input = document.getElementById(o.id);
+        index_input.blur();
         var content = encodeURIComponent(Util.charset.Base64.encode(o.value, "utf8"));
         layer.open({
             title: '',
@@ -208,7 +277,7 @@
             cancel: function () {
                 layer.closeAll();
             },
-            id: 'LAY_add_project' //设定一个id，防止重复弹出
+            id: 'LAY_add_project_C' //设定一个id，防止重复弹出
         });
     };
 
@@ -216,12 +285,20 @@
         var project_id = $("#subject").val();
         console.log("id: " + project_id);
         if (null == project_id || '' == project_id) {
+            // layer.msg('学科不能置空！',{icon: 2,time:2000});
+            // layer.msg('学科不能置空!', function () {
+            //     //关闭后的操作
+            //     var point_input = document.getElementById(o.id);
+            //     point_input.blur();
+            //     $("#knowledge_point").val('');
+            // });
             notify.warning("学科不能置空!", "topRight", function () {
                 //     //关闭后的操作
                 var point_input = document.getElementById(o.id);
                 point_input.blur();
                 $("#knowledge_point").val('');
             });
+
             return false;
         } else {
             layer.open({
@@ -244,7 +321,7 @@
                     $("#knowledge_point").val('<span class="layui-badge layui-bg-blue">蓝</span>')
                     layer.close(index); //关闭弹窗
                 },
-                id: 'LAY_add_point' //设定一个id，防止重复弹出
+                id: 'LAY_add_point_C' //设定一个id，防止重复弹出
             })
 
         }

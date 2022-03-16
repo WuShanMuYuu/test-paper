@@ -89,7 +89,7 @@ public class question_message_info {
     private Integer difficulty;
 
     @EruptField(
-            views = @View(title = "关联题干ID",sortable = true),
+            views = @View(title = "关联题干ID",sortable = true,width = "950px"),
             edit = @Edit(
                     title = "关联题干ID",
                     type = EditType.CHOICE,
@@ -108,7 +108,7 @@ public class question_message_info {
     private String answer;
 
     @EruptField(
-            views = @View(title = "使用状态"),
+            views = @View(title = "使用状态",show = false),
             edit = @Edit(
                     title = "使用状态",
                     search = @Search,
@@ -123,7 +123,7 @@ public class question_message_info {
     private Integer states;
 
     @EruptField(
-            views = @View(title = "删除状态"),
+            views = @View(title = "删除状态",show = false),
             edit = @Edit(
                     title = "删除状态",
                     search = @Search,
@@ -138,7 +138,7 @@ public class question_message_info {
     private Integer deleted;
 
     @EruptField(
-            views = @View(title = "创建时间",sortable = true),
+            views = @View(title = "创建时间",sortable = true,show = false),
             edit = @Edit(
                     title = "创建时间",
                     type = EditType.DATE, notNull = true,
