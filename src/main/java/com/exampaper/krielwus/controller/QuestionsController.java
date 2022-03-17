@@ -195,7 +195,7 @@ public class QuestionsController {
             return resultMap;
         } catch (Exception e) {
             e.printStackTrace();
-            //发生异常  删除写入数据  并将原数据写入redis缓存中
+            //发生异常  删除写入数据  并将原提交数据写入redis缓存中
             String detete_q = "DELETE FROM test_paper.em_question_info WHERE id ='" + getIndexID + "'";
             String detete_detail = "DELETE FROM test_paper.em_question_detail_info WHERE id ='" + getIndexID + "'";
             jdbcTemplate.execute(detete_q);
@@ -239,22 +239,22 @@ public class QuestionsController {
      * @return
      */
     @RequestMapping(value = "/answer-question")
-    public String answer_question(Model model,HttpServletRequest request) {
+    public String answer_question(Model model, HttpServletRequest request) {
         String sql = "select epi.id as id , epi.project_name as project_name from test_paper.em_project_info epi order by epi.sort asc";
         List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
-//        maps.forEach(map -> System.out.println(String.valueOf(map.get("project_name"))));
         model.addAttribute("subjectList", maps);
         return "/Questions/answer-questions";
     }
 
     /**
      * 计算题与实验题存盘
+     *
      * @param model
      * @param request
      * @return
      */
     @RequestMapping(value = "/insertCalculate")
-    public String insertCalculate(Model model,HttpServletRequest request) {
+    public String insertCalculate(Model model, HttpServletRequest request) {
 
         return "";
     }
@@ -310,16 +310,53 @@ public class QuestionsController {
     public String questionPreview(Model model, HttpServletRequest request) {
         String jsonStr = String.valueOf(request.getParameter("content"));
         JSONObject jsonObject = JSONObject.parseObject(Base64Util.Base64Decode(jsonStr, "UTF-8"));
+        String question_type = String.valueOf(jsonObject.get("question_type"));
+        model.addAttribute("question_type", question_type);
         String question_content = String.valueOf(jsonObject.get("question_content"));
-        String options_a = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">A. </span>" + String.valueOf(jsonObject.get("options_a")) + "</p>";
-        String options_b = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">B. </span>" + String.valueOf(jsonObject.get("options_b")) + "</p>";
-        String options_c = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">C. </span>" + String.valueOf(jsonObject.get("options_c")) + "</p>";
-        String options_d = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">D. </span>" + String.valueOf(jsonObject.get("options_d")) + "</p>";
-        model.addAttribute("question_content", question_content);
-        model.addAttribute("options_a", options_a);
-        model.addAttribute("options_b", options_b);
-        model.addAttribute("options_c", options_c);
-        model.addAttribute("options_d", options_d);
+        switch (question_type) {
+            //单选
+            case "1": {
+                String options_a = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">A. </span>" + String.valueOf(jsonObject.get("options_a")) + "</p>";
+                String options_b = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">B. </span>" + String.valueOf(jsonObject.get("options_b")) + "</p>";
+                String options_c = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">C. </span>" + String.valueOf(jsonObject.get("options_c")) + "</p>";
+                String options_d = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">D. </span>" + String.valueOf(jsonObject.get("options_d")) + "</p>";
+                model.addAttribute("question_content", question_content);
+                model.addAttribute("options_a", options_a);
+                model.addAttribute("options_b", options_b);
+                model.addAttribute("options_c", options_c);
+                model.addAttribute("options_d", options_d);
+            }
+            //多选
+            case "2": {
+                String options_a = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">A. </span>" + String.valueOf(jsonObject.get("options_a")) + "</p>";
+                String options_b = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">B. </span>" + String.valueOf(jsonObject.get("options_b")) + "</p>";
+                String options_c = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">C. </span>" + String.valueOf(jsonObject.get("options_c")) + "</p>";
+                String options_d = "<p><span style=\"color: #333333; font-family: 微软雅黑, Arial, 宋体; font-size: 14px; background-color: #FFFFFF;\">D. </span>" + String.valueOf(jsonObject.get("options_d")) + "</p>";
+                model.addAttribute("question_content", question_content);
+                model.addAttribute("options_a", options_a);
+                model.addAttribute("options_b", options_b);
+                model.addAttribute("options_c", options_c);
+                model.addAttribute("options_d", options_d);
+            }
+            //实验题
+            case "3": {
+                model.addAttribute("question_content", question_content);
+            }
+            //解答题
+            case "4": {
+                model.addAttribute("question_content", question_content);
+            }
+            //填空题
+            case "5": {
+                model.addAttribute("question_content", question_content);
+            }
+            //
+            case "6": {
+                model.addAttribute("question_content", question_content);
+            }
+            default:
+                model.addAttribute("question_content", question_content);
+        }
         return "/Questions/question-preview";
     }
 

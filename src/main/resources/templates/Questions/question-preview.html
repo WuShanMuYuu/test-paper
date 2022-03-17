@@ -15,7 +15,9 @@
         float: left;
         margin: 10px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.27), 0 0 20px rgba(0, 0, 0, .1) inset;
+        /*background: url("../image/wallhaven-wqegmx.jpg") no-repeat center;*/
     }
+
     .paper::after, .paper::before {
         content: '';
         position: absolute;
@@ -25,39 +27,70 @@
         z-index: -1;
         box-shadow: 0 2px 12px 5px rgba(0, 0, 0, .3);
     }
+
     .paper::after {
         left: 4px;
         transform: rotate(-6deg);
     }
+
     .paper::before {
         right: 4px;
         transform: rotate(6deg);
     }
 </style>
-<body style="width: 100%;height: 100%">
+<body style="width: 100%;height: 100%;">
 <!--    题目预览页面-->
-<div class="paper" id="preview">
+<div class="paper" id="preview" style="display: none">
     <div id="question_content" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
     <div id="options_a" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
     <div id="options_b" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
     <div id="options_c" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
     <div id="options_d" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
 </div>
-
+<div class="paper" id="experiment" style="display: none">
+    <div id="question_content_lib" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
+</div>
+<div class="paper" id="calculate" style="display: none">
+    <div id="question_content_c" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
+</div>
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
 <script type="text/javascript" th:inline="javascript">
     // $("#preview").css(height, 0.9 * document.documentElement.clientHeight);
-    var question_content = [[${question_content}]];
-    var options_a = [[${options_a}]];
-    var options_b = [[${options_b}]];
-    var options_c = [[${options_c}]];
-    var options_d = [[${options_d}]];
-    $("#question_content").html(question_content);
-    $("#options_a").html(options_a);
-    $("#options_b").html(options_b);
-    $("#options_c").html(options_c);
-    $("#options_d").html(options_d);
+    var question_type = [[${question_type}]];
+    if ("1" == question_type || 1 == question_type) {
+        document.getElementById("preview").style.display = "block";
+        var question_content = [[${question_content}]];
+        var options_a = [[${options_a}]];
+        var options_b = [[${options_b}]];
+        var options_c = [[${options_c}]];
+        var options_d = [[${options_d}]];
+        $("#question_content").html(question_content);
+        $("#options_a").html(options_a);
+        $("#options_b").html(options_b);
+        $("#options_c").html(options_c);
+        $("#options_d").html(options_d);
+    } else if ("2" == question_type || 2 == question_type) {
+        document.getElementById("preview").style.display = "block";
+        var question_content = [[${question_content}]];
+        var options_a = [[${options_a}]];
+        var options_b = [[${options_b}]];
+        var options_c = [[${options_c}]];
+        var options_d = [[${options_d}]];
+        $("#question_content").html(question_content);
+        $("#options_a").html(options_a);
+        $("#options_b").html(options_b);
+        $("#options_c").html(options_c);
+        $("#options_d").html(options_d);
+    } else {
+        document.getElementById("calculate").style.display = "block";
+        var question_content = [[${question_content}]];
+        $("#question_content_c").html(question_content);
+    }
+
+
+
+
 </script>
 </body>
 </html>
