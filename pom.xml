@@ -109,6 +109,13 @@
             <version>${erupt.version}</version>
         </dependency>
 
+        <!--积木报表集成-->
+        <dependency>
+            <groupId>org.jeecgframework.jimureport</groupId>
+            <artifactId>jimureport-spring-boot-starter</artifactId>
+            <version>1.4.32</version>
+        </dependency>
+
     </dependencies>
 
     <build>

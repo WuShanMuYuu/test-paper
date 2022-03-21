@@ -40,19 +40,36 @@
 </style>
 <body style="width: 100%;height: 100%;">
 <!--    题目预览页面-->
-<div class="paper" id="preview" style="display: none">
-    <div id="question_content" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
-    <div id="options_a" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
-    <div id="options_b" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
-    <div id="options_c" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
-    <div id="options_d" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
-</div>
-<div class="paper" id="experiment" style="display: none">
-    <div id="question_content_lib" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
-</div>
-<div class="paper" id="calculate" style="display: none">
-    <div id="question_content_c" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
-</div>
+    <div class="paper" id="preview" style="display: none">
+        <div id="question_content" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
+        <div id="options_a" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
+        <div id="options_b" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
+        <div id="options_c" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
+        <div id="options_d" style="margin-left: 2.5rem;margin-top: 0.5rem"></div>
+    </div>
+    <div class="paper" id="experiment" style="display: none">
+        <div id="question_content_lib" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
+    </div>
+    <div class="paper" id="calculate" style="display: none">
+        <div id="question_content_c" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
+    </div>
+
+    <form class="layui-form" id="judgment" style="display: none">
+        <div class="layui-form-item">
+            <div class="layui-form-item" style="width: 100%;margin-left: 1rem;">
+                <div class="layui-input-inline" style="width:60%;">
+                    <div id="question_content_j" style="margin-left: 0.5rem;margin-top: 1.5rem;"></div>
+                </div>
+            </div>
+            <div class="layui-form-item" style="width: 100%;margin-left: 2rem;">
+                <div class="layui-input-inline" style="width:60%;" id="answer">
+                    <input name="answer" type="radio" value="正确" index="正确" title="正确" lay-skin="primary">
+                    <input name="answer" type="radio" value="错误" index="错误" title="错误" lay-skin="primary">
+                </div>
+            </div>
+        </div>
+    </form>
+
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script type="text/javascript" src="../layui-v2.6.6/layui/layui.js"></script>
 <script type="text/javascript" th:inline="javascript">
@@ -82,7 +99,11 @@
         $("#options_b").html(options_b);
         $("#options_c").html(options_c);
         $("#options_d").html(options_d);
-    } else {
+    }else if ("6" == question_type || 6 == question_type){
+        document.getElementById("judgment").style.display = "block";
+        var question_content = [[${question_content}]];
+        $("#question_content_j").html(question_content);
+    }else {
         document.getElementById("calculate").style.display = "block";
         var question_content = [[${question_content}]];
         $("#question_content_c").html(question_content);
