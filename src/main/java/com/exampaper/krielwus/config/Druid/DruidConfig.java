@@ -1,4 +1,4 @@
-package com.exampaper.krielwus.config;
+package com.exampaper.krielwus.config.Druid;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
@@ -27,7 +27,7 @@ public class DruidConfig {
     }
 
     //配置 Druid 监控管理后台的Servlet；
-//内置 Servlet 容器时没有web.xml文件，所以使用 Spring Boot 的注册 Servlet 方式
+    //内置 Servlet 容器时没有web.xml文件，所以使用 Spring Boot 的注册 Servlet 方式
     @Bean
     public ServletRegistrationBean statViewServlet(){
         ServletRegistrationBean bean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
